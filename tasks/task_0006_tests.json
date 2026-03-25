@@ -31,6 +31,16 @@
   "deterministic": true,
   "test_cases": [
     {
+      "name": "function_call",
+      "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
+      "expected_output": "10\n",
+      "covers": [
+        "C",
+        "E"
+      ],
+      "required_for_task": false
+    },
+    {
       "name": "record_hash_ops",
       "input": "scheme program.scm\n(hash-ref (hash 'x 10 'y 20) 'y)\n",
       "expected_output": "20\n",
@@ -63,15 +73,6 @@
       "expected_output": "6\n",
       "covers": [
         "O"
-      ],
-      "required_for_task": false
-    },
-    {
-      "name": "vector_ops",
-      "input": "scheme program.scm\n(begin (define v (vector 1 2 3)) (vector-set! v 1 7) (vector-ref v 1))\n",
-      "expected_output": "7\n",
-      "covers": [
-        "P"
       ],
       "required_for_task": false
     }

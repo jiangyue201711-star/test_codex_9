@@ -31,6 +31,16 @@
   "deterministic": true,
   "test_cases": [
     {
+      "name": "function_call",
+      "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
+      "expected_output": "10\n",
+      "covers": [
+        "C",
+        "E"
+      ],
+      "required_for_task": false
+    },
+    {
       "name": "variable_access",
       "input": "scheme program.scm\n(begin (define x 7) (+ x 5))\n",
       "expected_output": "12\n",
@@ -63,15 +73,6 @@
       "expected_output": "6\n",
       "covers": [
         "O"
-      ],
-      "required_for_task": false
-    },
-    {
-      "name": "record_hash_ops",
-      "input": "scheme program.scm\n(hash-ref (hash 'x 10 'y 20) 'y)\n",
-      "expected_output": "20\n",
-      "covers": [
-        "Q"
       ],
       "required_for_task": false
     }

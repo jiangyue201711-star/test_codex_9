@@ -170,6 +170,7 @@ def base_test_pool(spec: TaskSpec) -> list[dict]:
     tests = [
         {"name": "basic_arithmetic", "input": "scheme program.scm\n(+ 2 3)\n", "expected_output": "5\n", "covers": ["A"]},
         {"name": "variable_access", "input": "scheme program.scm\n(begin (define x 7) (+ x 5))\n", "expected_output": "12\n", "covers": ["B"]},
+        {"name": "function_call", "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n", "expected_output": "10\n", "covers": ["C", "E"]},
         {"name": "while_loop", "input": "scheme program.scm\n(begin (define i 0) (define s 0) (while (< i 4) (set! s (+ s i)) (set! i (+ i 1))) s)\n", "expected_output": "6\n", "covers": ["O"]},
         {"name": "vector_ops", "input": "scheme program.scm\n(begin (define v (vector 1 2 3)) (vector-set! v 1 7) (vector-ref v 1))\n", "expected_output": "7\n", "covers": ["P"]},
         {"name": "record_hash_ops", "input": "scheme program.scm\n(hash-ref (hash 'x 10 'y 20) 'y)\n", "expected_output": "20\n", "covers": ["Q"]},
@@ -194,7 +195,11 @@ def build_tests(spec: TaskSpec) -> list[dict]:
     types = set(spec.task_types)
     required = [dict(t) for t in pool if any(c in types for c in t["covers"])]
     fallback = [dict(t) for t in pool if t not in required]
-    selected = (required + fallback)[:5]
+    selected = (required + fallback)
+    lambda_case = next((x for x in selected if x.get("name") == "function_call"), None)
+    if lambda_case is not None:
+        selected = [lambda_case] + [x for x in selected if x is not lambda_case]
+    selected = selected[:5]
     if len(selected) < 3:
         selected = (required + fallback)[:3]
     for t in selected:

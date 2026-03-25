@@ -10,7 +10,7 @@ python3 generate_mesis_bench.py --output-dir tasks --count 12 --seed 20260325
 
 ## 关键特性
 
-- 每个任务都内置元循环解释器核心能力（闭包、递归、条件、局部作用域、多层输入解析）。
+- 每个任务都内置元循环解释器核心能力（含 lambda/闭包、递归、条件、局部作用域、多层输入解析）。
 - 算术能力支持更丰富变体：
   - `basic`: `+ - * /`
   - `modulo`: `+ - * / modulo`

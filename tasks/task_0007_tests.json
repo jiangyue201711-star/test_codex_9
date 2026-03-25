@@ -34,6 +34,16 @@
   "deterministic": true,
   "test_cases": [
     {
+      "name": "function_call",
+      "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
+      "expected_output": "10\n",
+      "covers": [
+        "C",
+        "E"
+      ],
+      "required_for_task": false
+    },
+    {
       "name": "multi_layer_eval",
       "input": "scheme eval.scm\nscheme generated_eval.scm\n(+ 10 20)\n",
       "expected_output": "30\n",
@@ -69,15 +79,6 @@
       "expected_output": "12\n",
       "covers": [
         "B"
-      ],
-      "required_for_task": false
-    },
-    {
-      "name": "while_loop",
-      "input": "scheme program.scm\n(begin (define i 0) (define s 0) (while (< i 4) (set! s (+ s i)) (set! i (+ i 1))) s)\n",
-      "expected_output": "6\n",
-      "covers": [
-        "O"
       ],
       "required_for_task": false
     }
