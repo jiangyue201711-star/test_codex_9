@@ -1,14 +1,5 @@
 #!/usr/bin/env python3
-"""Generate MESIS-Bench meta-circular Scheme evaluator tasks in batch.
-
-This script creates pairs of:
-- task_xxxx_eval.scm
-- task_xxxx_tests.json
-
-The generated evaluator follows a Racket-compatible meta-circular design and
-includes line-oriented multi-layer dispatch logic for `scheme` and `eval.scm`
-execution headers.
-"""
+"""Generate MESIS-Bench meta-circular Scheme evaluator tasks in batch."""
 
 from __future__ import annotations
 
@@ -51,16 +42,178 @@ class TaskSpec:
     task_types: list[str]
 
 
+def feature_flags(spec: TaskSpec) -> dict[str, bool]:
+    t = set(spec.task_types)
+    return {
+        "arith": "A" in t or "I" in t,
+        "vars": "B" in t or "I" in t or "D" in t,
+        "lambda": "C" in t or "E" in t or "I" in t or "D" in t,
+        "recursion": "D" in t,
+        "higher_order": "E" in t or "I" in t,
+        "condition": "F" in t or "D" in t or "I" in t,
+        "multi_layer": "G" in t or "H" in t or "I" in t,
+        "self_host": "H" in t,
+    }
+
+
+def primitive_block(flags: dict[str, bool]) -> str:
+    core = [
+        "(cons 'display display)",
+        "(cons 'newline newline)",
+        "(cons 'list list)",
+        "(cons 'cons cons)",
+        "(cons 'car car)",
+        "(cons 'cdr cdr)",
+        "(cons 'null? null?)",
+        "(cons 'pair? pair?)",
+        "(cons 'number? number?)",
+        "(cons 'symbol? symbol?)",
+        "(cons 'not not)",
+    ]
+    if flags["arith"]:
+        core.extend([
+            "(cons '+ +)", "(cons '- -)", "(cons '* *)", "(cons '/ /)",
+            "(cons '= =)", "(cons '< <)", "(cons '<= <=)", "(cons '> >)", "(cons '>= >=)",
+        ])
+    if flags["higher_order"]:
+        core.extend([
+            "(cons 'map map)",
+            "(cons 'apply apply)",
+        ])
+    return "\n   ".join(core)
+
+
+def eval_special_forms(flags: dict[str, bool]) -> str:
+    forms = [
+        "[(number? exp) exp]",
+        "[(boolean? exp) exp]",
+        "[(string? exp) exp]",
+        "[(symbol? exp) (lookup env exp)]",
+        "[(not (pair? exp)) exp]",
+        "[(eq? (car exp) 'quote) (cadr exp)]",
+    ]
+    if flags["condition"]:
+        forms.extend([
+            "[(eq? (car exp) 'if)\n     (if (m-eval (cadr exp) env)\n         (m-eval (caddr exp) env)\n         (m-eval (cadddr exp) env))]",
+            "[(eq? (car exp) 'cond)\n     (m-eval (cond->if (cdr exp)) env)]",
+        ])
+
+    forms.append("[(eq? (car exp) 'begin) (eval-sequence (cdr exp) env)]")
+
+    if flags["vars"]:
+        forms.extend([
+            "[(eq? (car exp) 'define)\n     (let ([name (cadr exp)] [rhs (caddr exp)])\n       (let ([value (m-eval rhs env)])\n         (set! global-env (cons (cons name value) global-env))\n         name))]",
+            "[(eq? (car exp) 'set!)\n     (let ([name (cadr exp)] [rhs (caddr exp)])\n       (set-var env name (m-eval rhs env))\n       'ok)]",
+        ])
+
+    if flags["lambda"]:
+        forms.append("[(eq? (car exp) 'lambda) (make-closure (cadr exp) (cddr exp) env)]")
+
+    if flags["recursion"]:
+        forms.append(
+            "[(eq? (car exp) 'letrec)\n     (let* ([binding (car (cadr exp))]\n            [name (car binding)]\n            [rhs (cadr binding)])\n       (set! global-env (cons (cons name 'pending) global-env))\n       (set-var global-env name (m-eval rhs global-env))\n       (eval-sequence (cddr exp) global-env))]"
+        )
+
+    forms.append(
+        "[else\n     (let ([proc (m-eval (car exp) env)]\n           [args (map (lambda (e) (m-eval e env)) (cdr exp))])\n       (apply-proc proc args))]"
+    )
+    return "\n    ".join(forms)
+
+
+def layer_runner(flags: dict[str, bool]) -> str:
+    if not flags["multi_layer"]:
+        return dedent(
+            """
+            (define (resolve-program lines)
+              (if (null? lines) "" (car (reverse lines))))
+            """
+        ).strip()
+
+    host_note = "self-host aware" if flags["self_host"] else "multi-layer"
+    return dedent(
+        f"""
+        ;; {host_note} input resolver
+        (define (layer-header? line)
+          (define t (string-trim line))
+          (or (string-prefix? t "scheme ")
+              (string-prefix? t "eval.scm ")))
+
+        (define (resolve-program lines)
+          (define (loop xs depth)
+            (cond
+              [(null? xs) ""]
+              [(layer-header? (car xs))
+               (loop (cdr xs) (+ depth 1))]
+              [else (car xs)]))
+          (loop lines 0))
+        """
+    ).strip()
+
+
 def evaluator_source(spec: TaskSpec) -> str:
+    flags = feature_flags(spec)
     enabled = " ".join(spec.task_types)
+    forms = eval_special_forms(flags)
+    resolver = layer_runner(flags)
+
+    cond_helper = ""
+    if flags["condition"]:
+        cond_helper = dedent(
+            """
+            (define (cond->if clauses)
+              (if (null? clauses)
+                  #f
+                  (let ([clause (car clauses)] [rest (cdr clauses)])
+                    (if (eq? (car clause) 'else)
+                        (cons 'begin (cdr clause))
+                        (list 'if (car clause)
+                              (cons 'begin (cdr clause))
+                              (cond->if rest))))))
+            """
+        ).strip()
+
+    set_var_impl = dedent(
+        """
+        (define (set-var env sym val)
+          (cond
+            [(null? env) (error "cannot set! unbound variable" sym)]
+            [(eq? (caar env) sym) (set-cdr! (car env) val)]
+            [else (set-var (cdr env) sym val)]))
+        """
+    ).strip() if flags["vars"] or flags["recursion"] else ""
+
+    lambda_impl = dedent(
+        """
+        (define (closure? x)
+          (and (pair? x) (eq? (car x) 'closure)))
+
+        (define (make-closure params body env)
+          (list 'closure params body env))
+        """
+    ).strip() if flags["lambda"] else ""
+
+    apply_impl = dedent(
+        """
+        (define (apply-proc proc args)
+          (cond
+            [(and (pair? proc) (eq? (car proc) 'closure))
+             (let* ([params (cadr proc)]
+                    [body (caddr proc)]
+                    [saved-env (cadddr proc)]
+                    [next-env (extend-env params args saved-env)])
+               (eval-sequence body next-env))]
+            [(procedure? proc) (apply proc args)]
+            [else (error "not a procedure" proc)]))
+        """
+    ).strip()
+
     return dedent(
         f"""
         #lang racket
 
         ;; Auto-generated by MESIS-Bench generator
         ;; task_id={spec.task_id:04d}, difficulty=L{spec.difficulty}, types=[{enabled}]
-        ;; Features: meta-circular eval, closure/recursion support, deterministic IO,
-        ;; and multi-layer dispatch for `scheme`/`eval.scm` prefixed input.
+        ;; dynamic_features={json.dumps(flags, ensure_ascii=False)}
 
         (define (extend-env vars vals base)
           (append (map cons vars vals) base))
@@ -71,39 +224,17 @@ def evaluator_source(spec: TaskSpec) -> str:
             [(eq? (caar env) sym) (cdar env)]
             [else (lookup (cdr env) sym)]))
 
-        (define (set-var env sym val)
-          (cond
-            [(null? env) (error "cannot set! unbound variable" sym)]
-            [(eq? (caar env) sym) (set-cdr! (car env) val)]
-            [else (set-var (cdr env) sym val)]))
+        {set_var_impl}
 
         (define primitive-env
           (list
-           (cons '+ +) (cons '- -) (cons '* *) (cons '/ /)
-           (cons '= =) (cons '< <) (cons '<= <=) (cons '> >) (cons '>= >=)
-           (cons 'cons cons) (cons 'car car) (cons 'cdr cdr) (cons 'list list)
-           (cons 'null? null?) (cons 'pair? pair?) (cons 'number? number?)
-           (cons 'symbol? symbol?) (cons 'display display) (cons 'newline newline)
-           (cons 'not not)))
+           {primitive_block(flags)}))
 
         (define global-env primitive-env)
 
-        (define (closure? x)
-          (and (pair? x) (eq? (car x) 'closure)))
+        {lambda_impl}
 
-        (define (make-closure params body env)
-          (list 'closure params body env))
-
-        (define (apply-proc proc args)
-          (cond
-            [(closure? proc)
-             (let* ([params (cadr proc)]
-                    [body (caddr proc)]
-                    [saved-env (cadddr proc)]
-                    [next-env (extend-env params args saved-env)])
-               (eval-sequence body next-env))]
-            [(procedure? proc) (apply proc args)]
-            [else (error "not a procedure" proc)]))
+        {apply_impl}
 
         (define (eval-sequence exps env)
           (cond
@@ -113,73 +244,13 @@ def evaluator_source(spec: TaskSpec) -> str:
              (m-eval (car exps) env)
              (eval-sequence (cdr exps) env)]))
 
-        (define (cond->if clauses)
-          (if (null? clauses)
-              #f
-              (let ([clause (car clauses)]
-                    [rest (cdr clauses)])
-                (if (eq? (car clause) 'else)
-                    (cons 'begin (cdr clause))
-                    (list 'if (car clause)
-                          (cons 'begin (cdr clause))
-                          (cond->if rest))))))
+        {cond_helper}
 
         (define (m-eval exp env)
           (cond
-            [(number? exp) exp]
-            [(boolean? exp) exp]
-            [(string? exp) exp]
-            [(symbol? exp) (lookup env exp)]
-            [(not (pair? exp)) exp]
-            [(eq? (car exp) 'quote) (cadr exp)]
-            [(eq? (car exp) 'if)
-             (if (m-eval (cadr exp) env)
-                 (m-eval (caddr exp) env)
-                 (m-eval (cadddr exp) env))]
-            [(eq? (car exp) 'cond)
-             (m-eval (cond->if (cdr exp)) env)]
-            [(eq? (car exp) 'begin)
-             (eval-sequence (cdr exp) env)]
-            [(eq? (car exp) 'define)
-             (let ([name (cadr exp)]
-                   [rhs (caddr exp)])
-               (let ([value (m-eval rhs env)])
-                 (set! global-env (cons (cons name value) global-env))
-                 name))]
-            [(eq? (car exp) 'set!)
-             (let ([name (cadr exp)]
-                   [rhs (caddr exp)])
-               (set-var env name (m-eval rhs env))
-               'ok)]
-            [(eq? (car exp) 'lambda)
-             (make-closure (cadr exp) (cddr exp) env)]
-            [else
-             (let ([proc (m-eval (car exp) env)]
-                   [args (map (lambda (e) (m-eval e env)) (cdr exp))])
-               (apply-proc proc args))]))
+            {forms}))
 
-        ;; line-oriented input runner
-        (define (trim s) (string-trim s))
-
-        (define (layer-header? line)
-          (or (string-prefix? (trim line) "scheme ")
-              (string-prefix? (trim line) "eval.scm ")))
-
-        (define (extract-payload line)
-          (let* ([s (trim line)]
-                 [parts (string-split s)])
-            (if (<= (length parts) 1)
-                ""
-                (string-join (cdr parts) " "))))
-
-        (define (run-layers lines)
-          (define (loop remaining depth)
-            (cond
-              [(null? remaining) ""]
-              [(layer-header? (car remaining))
-               (loop (cdr remaining) (+ depth 1))]
-              [else (car remaining)]))
-          (loop lines 0))
+        {resolver}
 
         (define (main)
           (define all-lines
@@ -189,7 +260,7 @@ def evaluator_source(spec: TaskSpec) -> str:
                   (reverse acc)
                   (loop (cons line acc)))))
 
-          (define target (run-layers all-lines))
+          (define target (resolve-program all-lines))
           (define expr
             (with-input-from-string target
               (lambda () (read))))
@@ -203,13 +274,19 @@ def evaluator_source(spec: TaskSpec) -> str:
     ).strip() + "\n"
 
 
-def build_tests(spec: TaskSpec) -> list[dict]:
-    tests: list[dict] = [
+def base_test_pool() -> list[dict]:
+    return [
         {
             "name": "basic_arithmetic",
             "input": "scheme program.scm\n(+ 2 3)\n",
             "expected_output": "5\n",
             "covers": ["A"],
+        },
+        {
+            "name": "variable_access",
+            "input": "scheme program.scm\n(begin (define x 7) (+ x 5))\n",
+            "expected_output": "12\n",
+            "covers": ["B"],
         },
         {
             "name": "function_call",
@@ -219,19 +296,13 @@ def build_tests(spec: TaskSpec) -> list[dict]:
         },
         {
             "name": "recursive_factorial",
-            "input": (
-                "scheme program.scm\n"
-                "(begin (define fact (lambda (n) (if (= n 0) 1 (* n (fact (- n 1)))))) (fact 5))\n"
-            ),
+            "input": "scheme program.scm\n(begin (define fact (lambda (n) (if (= n 0) 1 (* n (fact (- n 1)))))) (fact 5))\n",
             "expected_output": "120\n",
             "covers": ["D", "F"],
         },
         {
             "name": "closure_high_order",
-            "input": (
-                "scheme program.scm\n"
-                "(begin (define make-adder (lambda (x) (lambda (y) (+ x y)))) ((make-adder 10) 5))\n"
-            ),
+            "input": "scheme program.scm\n(begin (define make-adder (lambda (x) (lambda (y) (+ x y)))) ((make-adder 10) 5))\n",
             "expected_output": "15\n",
             "covers": ["E"],
         },
@@ -243,10 +314,27 @@ def build_tests(spec: TaskSpec) -> list[dict]:
         },
     ]
 
-    # deterministic filtering: keep all core tests, but annotate relevance by spec
-    for t in tests:
-        t["required_for_task"] = any(k in spec.task_types for k in t["covers"])
 
+def build_tests(spec: TaskSpec) -> list[dict]:
+    pool = base_test_pool()
+    types = set(spec.task_types)
+
+    required = [
+        t for t in pool
+        if any(c in types for c in t["covers"])
+    ]
+    fallback = [t for t in pool if t not in required]
+
+    selected = required + fallback
+    selected = selected[:5]
+    if len(selected) < 3:
+        selected = (required + fallback)[:3]
+
+    tests = []
+    for t in selected:
+        row = dict(t)
+        row["required_for_task"] = any(c in types for c in row["covers"])
+        tests.append(row)
     return tests
 
 
@@ -256,7 +344,8 @@ def build_task_specs(count: int, seed: int) -> list[TaskSpec]:
     for i in range(1, count + 1):
         difficulty = ((i - 1) % 8) + 1
         pool = DIFFICULTY_LEVELS[difficulty]
-        k = 2 if len(pool) >= 2 else 1
+        # At high difficulty allow richer组合
+        k = 3 if difficulty >= 7 and len(pool) >= 3 else min(2, len(pool))
         task_types = sorted(rng.sample(pool, k=k))
         specs.append(TaskSpec(task_id=i, difficulty=difficulty, task_types=task_types))
     return specs
@@ -278,12 +367,14 @@ def generate(output_dir: Path, count: int, seed: int) -> None:
         eval_path = output_dir / f"{stem}_eval.scm"
         tests_path = output_dir / f"{stem}_tests.json"
 
+        flags = feature_flags(spec)
         eval_path.write_text(evaluator_source(spec), encoding="utf-8")
         tests_payload = {
             "task_id": stem,
             "difficulty": f"L{spec.difficulty}",
             "task_types": spec.task_types,
             "task_type_descriptions": {k: TASK_TYPES[k] for k in spec.task_types},
+            "feature_flags": flags,
             "deterministic": True,
             "test_cases": build_tests(spec),
         }
@@ -297,6 +388,7 @@ def generate(output_dir: Path, count: int, seed: int) -> None:
                 "task_id": stem,
                 "difficulty": f"L{spec.difficulty}",
                 "task_types": spec.task_types,
+                "feature_flags": flags,
                 "eval": str(eval_path.relative_to(output_dir.parent)),
                 "tests": str(tests_path.relative_to(output_dir.parent)),
             }

@@ -9,17 +9,18 @@
     "C": "函数定义与调用",
     "E": "闭包与高阶函数"
   },
+  "feature_flags": {
+    "arith": false,
+    "vars": false,
+    "lambda": true,
+    "recursion": false,
+    "higher_order": true,
+    "condition": false,
+    "multi_layer": false,
+    "self_host": false
+  },
   "deterministic": true,
   "test_cases": [
-    {
-      "name": "basic_arithmetic",
-      "input": "scheme program.scm\n(+ 2 3)\n",
-      "expected_output": "5\n",
-      "covers": [
-        "A"
-      ],
-      "required_for_task": false
-    },
     {
       "name": "function_call",
       "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
@@ -28,16 +29,6 @@
         "C"
       ],
       "required_for_task": true
-    },
-    {
-      "name": "recursive_factorial",
-      "input": "scheme program.scm\n(begin (define fact (lambda (n) (if (= n 0) 1 (* n (fact (- n 1)))))) (fact 5))\n",
-      "expected_output": "120\n",
-      "covers": [
-        "D",
-        "F"
-      ],
-      "required_for_task": false
     },
     {
       "name": "closure_high_order",
@@ -49,13 +40,30 @@
       "required_for_task": true
     },
     {
-      "name": "multi_layer_eval",
-      "input": "scheme eval.scm\nscheme generated_eval.scm\n(+ 10 20)\n",
-      "expected_output": "30\n",
+      "name": "basic_arithmetic",
+      "input": "scheme program.scm\n(+ 2 3)\n",
+      "expected_output": "5\n",
       "covers": [
-        "G",
-        "H",
-        "I"
+        "A"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "variable_access",
+      "input": "scheme program.scm\n(begin (define x 7) (+ x 5))\n",
+      "expected_output": "12\n",
+      "covers": [
+        "B"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "recursive_factorial",
+      "input": "scheme program.scm\n(begin (define fact (lambda (n) (if (= n 0) 1 (* n (fact (- n 1)))))) (fact 5))\n",
+      "expected_output": "120\n",
+      "covers": [
+        "D",
+        "F"
       ],
       "required_for_task": false
     }

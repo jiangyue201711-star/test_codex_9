@@ -10,6 +10,16 @@
         "A",
         "B"
       ],
+      "feature_flags": {
+        "arith": true,
+        "vars": true,
+        "lambda": false,
+        "recursion": false,
+        "higher_order": false,
+        "condition": false,
+        "multi_layer": false,
+        "self_host": false
+      },
       "eval": "tasks/task_0001_eval.scm",
       "tests": "tasks/task_0001_tests.json"
     },
@@ -20,6 +30,16 @@
         "B",
         "C"
       ],
+      "feature_flags": {
+        "arith": false,
+        "vars": true,
+        "lambda": true,
+        "recursion": false,
+        "higher_order": false,
+        "condition": false,
+        "multi_layer": false,
+        "self_host": false
+      },
       "eval": "tasks/task_0002_eval.scm",
       "tests": "tasks/task_0002_tests.json"
     },
@@ -30,6 +50,16 @@
         "C",
         "E"
       ],
+      "feature_flags": {
+        "arith": false,
+        "vars": false,
+        "lambda": true,
+        "recursion": false,
+        "higher_order": true,
+        "condition": false,
+        "multi_layer": false,
+        "self_host": false
+      },
       "eval": "tasks/task_0003_eval.scm",
       "tests": "tasks/task_0003_tests.json"
     },
@@ -40,6 +70,16 @@
         "D",
         "F"
       ],
+      "feature_flags": {
+        "arith": false,
+        "vars": true,
+        "lambda": true,
+        "recursion": true,
+        "higher_order": false,
+        "condition": true,
+        "multi_layer": false,
+        "self_host": false
+      },
       "eval": "tasks/task_0004_eval.scm",
       "tests": "tasks/task_0004_tests.json"
     },
@@ -50,6 +90,16 @@
         "G",
         "I"
       ],
+      "feature_flags": {
+        "arith": true,
+        "vars": true,
+        "lambda": true,
+        "recursion": false,
+        "higher_order": true,
+        "condition": true,
+        "multi_layer": true,
+        "self_host": false
+      },
       "eval": "tasks/task_0005_eval.scm",
       "tests": "tasks/task_0005_tests.json"
     },
@@ -60,6 +110,16 @@
         "G",
         "H"
       ],
+      "feature_flags": {
+        "arith": false,
+        "vars": false,
+        "lambda": false,
+        "recursion": false,
+        "higher_order": false,
+        "condition": false,
+        "multi_layer": true,
+        "self_host": true
+      },
       "eval": "tasks/task_0006_eval.scm",
       "tests": "tasks/task_0006_tests.json"
     },
@@ -67,9 +127,20 @@
       "task_id": "task_0007",
       "difficulty": "L7",
       "task_types": [
+        "G",
         "H",
         "I"
       ],
+      "feature_flags": {
+        "arith": true,
+        "vars": true,
+        "lambda": true,
+        "recursion": false,
+        "higher_order": true,
+        "condition": true,
+        "multi_layer": true,
+        "self_host": true
+      },
       "eval": "tasks/task_0007_eval.scm",
       "tests": "tasks/task_0007_tests.json"
     },
@@ -77,9 +148,20 @@
       "task_id": "task_0008",
       "difficulty": "L8",
       "task_types": [
-        "F",
+        "C",
+        "E",
         "H"
       ],
+      "feature_flags": {
+        "arith": false,
+        "vars": false,
+        "lambda": true,
+        "recursion": false,
+        "higher_order": true,
+        "condition": false,
+        "multi_layer": true,
+        "self_host": true
+      },
       "eval": "tasks/task_0008_eval.scm",
       "tests": "tasks/task_0008_tests.json"
     },
@@ -90,6 +172,16 @@
         "A",
         "B"
       ],
+      "feature_flags": {
+        "arith": true,
+        "vars": true,
+        "lambda": false,
+        "recursion": false,
+        "higher_order": false,
+        "condition": false,
+        "multi_layer": false,
+        "self_host": false
+      },
       "eval": "tasks/task_0009_eval.scm",
       "tests": "tasks/task_0009_tests.json"
     },
@@ -100,6 +192,16 @@
         "B",
         "C"
       ],
+      "feature_flags": {
+        "arith": false,
+        "vars": true,
+        "lambda": true,
+        "recursion": false,
+        "higher_order": false,
+        "condition": false,
+        "multi_layer": false,
+        "self_host": false
+      },
       "eval": "tasks/task_0010_eval.scm",
       "tests": "tasks/task_0010_tests.json"
     },
@@ -110,6 +212,16 @@
         "C",
         "E"
       ],
+      "feature_flags": {
+        "arith": false,
+        "vars": false,
+        "lambda": true,
+        "recursion": false,
+        "higher_order": true,
+        "condition": false,
+        "multi_layer": false,
+        "self_host": false
+      },
       "eval": "tasks/task_0011_eval.scm",
       "tests": "tasks/task_0011_tests.json"
     },
@@ -120,6 +232,16 @@
         "D",
         "F"
       ],
+      "feature_flags": {
+        "arith": false,
+        "vars": true,
+        "lambda": true,
+        "recursion": true,
+        "higher_order": false,
+        "condition": true,
+        "multi_layer": false,
+        "self_host": false
+      },
       "eval": "tasks/task_0012_eval.scm",
       "tests": "tasks/task_0012_tests.json"
     }

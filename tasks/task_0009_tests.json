@@ -9,6 +9,16 @@
     "A": "基础算术 (+, -, *, /)",
     "B": "变量定义与访问"
   },
+  "feature_flags": {
+    "arith": true,
+    "vars": true,
+    "lambda": false,
+    "recursion": false,
+    "higher_order": false,
+    "condition": false,
+    "multi_layer": false,
+    "self_host": false
+  },
   "deterministic": true,
   "test_cases": [
     {
@@ -17,6 +27,15 @@
       "expected_output": "5\n",
       "covers": [
         "A"
+      ],
+      "required_for_task": true
+    },
+    {
+      "name": "variable_access",
+      "input": "scheme program.scm\n(begin (define x 7) (+ x 5))\n",
+      "expected_output": "12\n",
+      "covers": [
+        "B"
       ],
       "required_for_task": true
     },
@@ -45,17 +64,6 @@
       "expected_output": "15\n",
       "covers": [
         "E"
-      ],
-      "required_for_task": false
-    },
-    {
-      "name": "multi_layer_eval",
-      "input": "scheme eval.scm\nscheme generated_eval.scm\n(+ 10 20)\n",
-      "expected_output": "30\n",
-      "covers": [
-        "G",
-        "H",
-        "I"
       ],
       "required_for_task": false
     }
