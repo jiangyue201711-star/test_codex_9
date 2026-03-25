@@ -2,8 +2,8 @@
   "task_id": "task_0010",
   "difficulty": "L2",
   "task_types": [
-    "C",
-    "M"
+    "B",
+    "C"
   ],
   "variants": {
     "arith": "basic"
@@ -15,17 +15,18 @@
     "/"
   ],
   "task_type_descriptions": {
-    "C": "函数定义与调用",
-    "M": "标准输入输出任务（read/read-line/display/write）"
+    "B": "变量定义与访问",
+    "C": "函数定义与调用"
   },
   "feature_flags": {
     "symbolic_list": false,
     "lazy_eval": false,
-    "io_basic": true,
+    "io_basic": false,
     "meta_program": false,
     "loop_syntax": false,
     "vector_ds": false,
     "record_ds": false,
+    "file_ops": false,
     "arith_variant": "basic"
   },
   "deterministic": true,
@@ -41,20 +42,20 @@
       "required_for_task": true
     },
     {
-      "name": "basic_arithmetic",
-      "input": "scheme program.scm\n(+ 2 3)\n",
-      "expected_output": "5\n",
-      "covers": [
-        "A"
-      ],
-      "required_for_task": false
-    },
-    {
       "name": "variable_access",
       "input": "scheme program.scm\n(begin (define x 7) (+ x 5))\n",
       "expected_output": "12\n",
       "covers": [
         "B"
+      ],
+      "required_for_task": true
+    },
+    {
+      "name": "basic_arithmetic",
+      "input": "scheme program.scm\n(+ 2 3)\n",
+      "expected_output": "5\n",
+      "covers": [
+        "A"
       ],
       "required_for_task": false
     },

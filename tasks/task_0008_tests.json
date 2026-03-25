@@ -3,8 +3,8 @@
   "difficulty": "L8",
   "task_types": [
     "A",
-    "M",
-    "N"
+    "N",
+    "O"
   ],
   "variants": {
     "arith": "bitwise"
@@ -18,17 +18,18 @@
   ],
   "task_type_descriptions": {
     "A": "基础算术 (+, -, *, /)",
-    "M": "标准输入输出任务（read/read-line/display/write）",
-    "N": "元程序任务（程序生成与apply/eval组合）"
+    "N": "元程序任务（程序生成与apply/eval组合）",
+    "O": "循环控制语法（for/while）"
   },
   "feature_flags": {
     "symbolic_list": false,
     "lazy_eval": false,
-    "io_basic": true,
+    "io_basic": false,
     "meta_program": true,
-    "loop_syntax": false,
+    "loop_syntax": true,
     "vector_ds": false,
     "record_ds": false,
+    "file_ops": false,
     "arith_variant": "bitwise"
   },
   "deterministic": true,
@@ -53,6 +54,15 @@
       "required_for_task": true
     },
     {
+      "name": "while_loop",
+      "input": "scheme program.scm\n(begin (define i 0) (define s 0) (while (< i 4) (set! s (+ s i)) (set! i (+ i 1))) s)\n",
+      "expected_output": "6\n",
+      "covers": [
+        "O"
+      ],
+      "required_for_task": true
+    },
+    {
       "name": "arithmetic_bitwise",
       "input": "scheme program.scm\n(bit-and 6 3)\n",
       "expected_output": "2\n",
@@ -68,15 +78,6 @@
       "expected_output": "12\n",
       "covers": [
         "B"
-      ],
-      "required_for_task": false
-    },
-    {
-      "name": "while_loop",
-      "input": "scheme program.scm\n(begin (define i 0) (define s 0) (while (< i 4) (set! s (+ s i)) (set! i (+ i 1))) s)\n",
-      "expected_output": "6\n",
-      "covers": [
-        "O"
       ],
       "required_for_task": false
     }

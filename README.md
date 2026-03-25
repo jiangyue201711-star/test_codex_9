@@ -18,6 +18,6 @@ python3 generate_mesis_bench.py --output-dir tasks --count 12 --seed 20260325
   - `comparison`: `= < > <= >=`
   - `math_ext`: `abs sqrt pow log`
   - `random`: `rand seed`（可选，默认不作为强确定性评测核心）
-- 新增语法与任务类型：O(for/while)、P(vector数组)、Q(hash记录/结构体)
-- 所有 `eval.scm` 支持标准输入读取与运行期输入转发，支持 `read/read-line/display/write`。
+- 新增语法与任务类型：O(for/while)、P(vector数组)、Q(hash记录/结构体)、R(文件操作)
+- 所有 `eval.scm` 支持标准输入读取与运行期输入转发，支持 `read/read-line/display/write` 与 `fopen/fclose/fread/fwrite`。
 - 输出 `variants` + `arith_variant_ops` + `feature_flags`，便于差异化评测。

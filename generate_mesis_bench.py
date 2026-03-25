@@ -17,7 +17,7 @@ TASK_TYPES = {
     "J": "符号与列表程序（quote/list/map/filter/fold）", "K": "局部作用域与绑定策略（let/let*/letrec）",
     "L": "惰性求值与延迟执行（delay/force/thunk）", "M": "标准输入输出任务（read/read-line/display/write）",
     "N": "元程序任务（程序生成与apply/eval组合）", "O": "循环控制语法（for/while）",
-    "P": "数组数据结构（vector）", "Q": "结构体/记录数据结构（hash作为record）",
+    "P": "数组数据结构（vector）", "Q": "结构体/记录数据结构（hash作为record）", "R": "基本文件操作（fopen/fclose/fread/fwrite）",
 }
 
 ARITH_VARIANTS = {
@@ -41,7 +41,7 @@ ARITH_BINDINGS = {
 DIFFICULTY_LEVELS = {
     1: ["A", "B", "M"], 2: ["B", "C", "J", "M", "P"], 3: ["C", "E", "J", "N", "Q"],
     4: ["D", "F", "K", "N", "O"], 5: ["G", "I", "K", "M", "P"], 6: ["H", "G", "L", "M", "Q"],
-    7: ["G", "H", "I", "K", "L", "N", "O", "P"], 8: ["A", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q"],
+    7: ["G", "H", "I", "K", "L", "N", "O", "P", "R"], 8: ["A", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R"],
 }
 
 
@@ -63,7 +63,7 @@ def feature_flags(spec: TaskSpec) -> dict[str, bool]:
     t = set(spec.task_types)
     return {
         "symbolic_list": "J" in t, "lazy_eval": "L" in t, "io_basic": "M" in t, "meta_program": "N" in t,
-        "loop_syntax": "O" in t, "vector_ds": "P" in t, "record_ds": "Q" in t,
+        "loop_syntax": "O" in t, "vector_ds": "P" in t, "record_ds": "Q" in t, "file_ops": "R" in t,
         "arith_variant": spec.variants["arith"],
     }
 
@@ -90,6 +90,8 @@ def primitive_block(flags: dict[str, bool], variants: dict[str, str]) -> str:
         core += ["(cons 'vector vector)", "(cons 'make-vector make-vector)", "(cons 'vector-ref vector-ref)", "(cons 'vector-set! vector-set!)", "(cons 'vector-length vector-length)"]
     if flags["record_ds"]:
         core += ["(cons 'hash hash)", "(cons 'hash-ref hash-ref)", "(cons 'hash-set hash-set)"]
+    if flags["file_ops"]:
+        core += ["(cons 'fopen fopen)", "(cons 'fclose fclose)", "(cons 'fread fread)", "(cons 'fwrite fwrite)"]
     return "\n   ".join(core)
 
 
@@ -131,6 +133,19 @@ def evaluator_source(spec: TaskSpec) -> str:
     (define (extend-env vars vals base) (append (map cons vars vals) base))
     (define (lookup env sym) (cond [(null? env) (error "unbound variable" sym)] [(eq? (caar env) sym) (cdar env)] [else (lookup (cdr env) sym)]))
     (define (set-var env sym val) (cond [(null? env) (error "cannot set! unbound variable" sym)] [(eq? (caar env) sym) (set-cdr! (car env) val)] [else (set-var (cdr env) sym val)]))
+
+    (define (fopen path mode)
+      (cond [(equal? mode "r") (open-input-file path)]
+            [(equal? mode "w") (open-output-file path #:exists 'truncate/replace)]
+            [(equal? mode "a") (open-output-file path #:exists 'append)]
+            [else (error "unsupported fopen mode" mode)]))
+    (define (fclose p)
+      (cond [(input-port? p) (close-input-port p)]
+            [(output-port? p) (close-output-port p)]
+            [else (error "not a port" p)])
+      'ok)
+    (define (fread p) (read-line p 'any))
+    (define (fwrite p s) (display s p) (flush-output p) 'ok)
 
     (define primitive-env
       (list
@@ -174,6 +189,7 @@ def base_test_pool(spec: TaskSpec) -> list[dict]:
         {"name": "while_loop", "input": "scheme program.scm\n(begin (define i 0) (define s 0) (while (< i 4) (set! s (+ s i)) (set! i (+ i 1))) s)\n", "expected_output": "6\n", "covers": ["O"]},
         {"name": "vector_ops", "input": "scheme program.scm\n(begin (define v (vector 1 2 3)) (vector-set! v 1 7) (vector-ref v 1))\n", "expected_output": "7\n", "covers": ["P"]},
         {"name": "record_hash_ops", "input": "scheme program.scm\n(hash-ref (hash 'x 10 'y 20) 'y)\n", "expected_output": "20\n", "covers": ["Q"]},
+        {"name": "file_ops_rw", "input": "scheme program.scm\n(begin (define p (fopen \"task_tmp.txt\" \"w\")) (fwrite p \"hello\") (fclose p) (define r (fopen \"task_tmp.txt\" \"r\")) (define x (fread r)) (fclose r) x)\n", "expected_output": "hello\n", "covers": ["R"]},
         {"name": "multi_layer_eval", "input": "scheme eval.scm\nscheme generated_eval.scm\n(+ 10 20)\n", "expected_output": "30\n", "covers": ["G", "H", "I"]},
     ]
     av = spec.variants.get("arith")
@@ -217,6 +233,9 @@ def build_task_specs(count: int, seed: int) -> list[TaskSpec]:
         task_types = sorted(rng.sample(pool, k=min(k, len(pool))))
         if difficulty in (1, 8) and not ({"A", "I"} & set(task_types)):
             task_types[0] = "A"
+            task_types = sorted(set(task_types))
+        if i % 6 == 0 and "R" not in task_types:
+            task_types[0] = "R"
             task_types = sorted(set(task_types))
         specs.append(TaskSpec(i, difficulty, task_types, choose_variants(task_types, i)))
     return specs

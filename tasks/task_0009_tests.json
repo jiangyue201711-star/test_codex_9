@@ -27,6 +27,7 @@
     "loop_syntax": false,
     "vector_ds": false,
     "record_ds": false,
+    "file_ops": false,
     "arith_variant": "comparison"
   },
   "deterministic": true,

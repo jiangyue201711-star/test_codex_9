@@ -2,8 +2,8 @@
   "task_id": "task_0011",
   "difficulty": "L3",
   "task_types": [
-    "C",
-    "Q"
+    "E",
+    "N"
   ],
   "variants": {
     "arith": "basic"
@@ -15,17 +15,18 @@
     "/"
   ],
   "task_type_descriptions": {
-    "C": "函数定义与调用",
-    "Q": "结构体/记录数据结构（hash作为record）"
+    "E": "闭包与高阶函数",
+    "N": "元程序任务（程序生成与apply/eval组合）"
   },
   "feature_flags": {
     "symbolic_list": false,
     "lazy_eval": false,
     "io_basic": false,
-    "meta_program": false,
+    "meta_program": true,
     "loop_syntax": false,
     "vector_ds": false,
-    "record_ds": true,
+    "record_ds": false,
+    "file_ops": false,
     "arith_variant": "basic"
   },
   "deterministic": true,
@@ -37,15 +38,6 @@
       "covers": [
         "C",
         "E"
-      ],
-      "required_for_task": true
-    },
-    {
-      "name": "record_hash_ops",
-      "input": "scheme program.scm\n(hash-ref (hash 'x 10 'y 20) 'y)\n",
-      "expected_output": "20\n",
-      "covers": [
-        "Q"
       ],
       "required_for_task": true
     },
@@ -73,6 +65,15 @@
       "expected_output": "6\n",
       "covers": [
         "O"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "vector_ops",
+      "input": "scheme program.scm\n(begin (define v (vector 1 2 3)) (vector-set! v 1 7) (vector-ref v 1))\n",
+      "expected_output": "7\n",
+      "covers": [
+        "P"
       ],
       "required_for_task": false
     }

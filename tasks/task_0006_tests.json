@@ -2,8 +2,8 @@
   "task_id": "task_0006",
   "difficulty": "L6",
   "task_types": [
-    "L",
-    "Q"
+    "Q",
+    "R"
   ],
   "variants": {
     "arith": "basic"
@@ -15,17 +15,18 @@
     "/"
   ],
   "task_type_descriptions": {
-    "L": "惰性求值与延迟执行（delay/force/thunk）",
-    "Q": "结构体/记录数据结构（hash作为record）"
+    "Q": "结构体/记录数据结构（hash作为record）",
+    "R": "基本文件操作（fopen/fclose/fread/fwrite）"
   },
   "feature_flags": {
     "symbolic_list": false,
-    "lazy_eval": true,
+    "lazy_eval": false,
     "io_basic": false,
     "meta_program": false,
     "loop_syntax": false,
     "vector_ds": false,
     "record_ds": true,
+    "file_ops": true,
     "arith_variant": "basic"
   },
   "deterministic": true,
@@ -50,6 +51,15 @@
       "required_for_task": true
     },
     {
+      "name": "file_ops_rw",
+      "input": "scheme program.scm\n(begin (define p (fopen \"task_tmp.txt\" \"w\")) (fwrite p \"hello\") (fclose p) (define r (fopen \"task_tmp.txt\" \"r\")) (define x (fread r)) (fclose r) x)\n",
+      "expected_output": "hello\n",
+      "covers": [
+        "R"
+      ],
+      "required_for_task": true
+    },
+    {
       "name": "basic_arithmetic",
       "input": "scheme program.scm\n(+ 2 3)\n",
       "expected_output": "5\n",
@@ -64,15 +74,6 @@
       "expected_output": "12\n",
       "covers": [
         "B"
-      ],
-      "required_for_task": false
-    },
-    {
-      "name": "while_loop",
-      "input": "scheme program.scm\n(begin (define i 0) (define s 0) (while (< i 4) (set! s (+ s i)) (set! i (+ i 1))) s)\n",
-      "expected_output": "6\n",
-      "covers": [
-        "O"
       ],
       "required_for_task": false
     }
