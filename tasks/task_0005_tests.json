@@ -3,33 +3,35 @@
   "difficulty": "L5",
   "task_types": [
     "G",
-    "K"
+    "M"
   ],
   "task_type_descriptions": {
     "G": "多层 eval 调用自身",
-    "K": "局部作用域与绑定策略（let/let*/letrec）"
+    "M": "标准输入输出任务（read/read-line/display/write）"
   },
   "feature_flags": {
     "arith": false,
-    "vars": true,
-    "lambda": true,
-    "recursion": true,
+    "vars": false,
+    "lambda": false,
+    "recursion": false,
     "higher_order": false,
-    "condition": true,
+    "condition": false,
     "multi_layer": true,
     "self_host": false,
     "symbolic_list": false,
-    "local_scope": true,
-    "lazy_eval": false
+    "local_scope": false,
+    "lazy_eval": false,
+    "io_basic": true,
+    "meta_program": false
   },
   "deterministic": true,
   "test_cases": [
     {
-      "name": "local_scope_let_star",
-      "input": "scheme program.scm\n(let* ((x 2) (y (+ x 3))) (* y 2))\n",
-      "expected_output": "10\n",
+      "name": "io_read_line",
+      "input": "scheme program.scm\n(begin (display (read-line)) (newline) 0)\nhello-mesis\n",
+      "expected_output": "hello-mesis\n0\n",
       "covers": [
-        "K"
+        "M"
       ],
       "required_for_task": true
     },

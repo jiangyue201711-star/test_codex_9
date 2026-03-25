@@ -2,15 +2,15 @@
   "task_id": "task_0001",
   "difficulty": "L1",
   "task_types": [
-    "A",
-    "B"
+    "B",
+    "M"
   ],
   "task_type_descriptions": {
-    "A": "基础算术 (+, -, *, /)",
-    "B": "变量定义与访问"
+    "B": "变量定义与访问",
+    "M": "标准输入输出任务（read/read-line/display/write）"
   },
   "feature_flags": {
-    "arith": true,
+    "arith": false,
     "vars": true,
     "lambda": false,
     "recursion": false,
@@ -20,19 +20,12 @@
     "self_host": false,
     "symbolic_list": false,
     "local_scope": false,
-    "lazy_eval": false
+    "lazy_eval": false,
+    "io_basic": true,
+    "meta_program": false
   },
   "deterministic": true,
   "test_cases": [
-    {
-      "name": "basic_arithmetic",
-      "input": "scheme program.scm\n(+ 2 3)\n",
-      "expected_output": "5\n",
-      "covers": [
-        "A"
-      ],
-      "required_for_task": true
-    },
     {
       "name": "variable_access",
       "input": "scheme program.scm\n(begin (define x 7) (+ x 5))\n",
@@ -41,6 +34,24 @@
         "B"
       ],
       "required_for_task": true
+    },
+    {
+      "name": "io_read_line",
+      "input": "scheme program.scm\n(begin (display (read-line)) (newline) 0)\nhello-mesis\n",
+      "expected_output": "hello-mesis\n0\n",
+      "covers": [
+        "M"
+      ],
+      "required_for_task": true
+    },
+    {
+      "name": "basic_arithmetic",
+      "input": "scheme program.scm\n(+ 2 3)\n",
+      "expected_output": "5\n",
+      "covers": [
+        "A"
+      ],
+      "required_for_task": false
     },
     {
       "name": "function_call",
@@ -58,15 +69,6 @@
       "covers": [
         "D",
         "F"
-      ],
-      "required_for_task": false
-    },
-    {
-      "name": "closure_high_order",
-      "input": "scheme program.scm\n(begin (define make-adder (lambda (x) (lambda (y) (+ x y)))) ((make-adder 10) 5))\n",
-      "expected_output": "15\n",
-      "covers": [
-        "E"
       ],
       "required_for_task": false
     }

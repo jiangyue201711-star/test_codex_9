@@ -2,56 +2,57 @@
   "task_id": "task_0008",
   "difficulty": "L8",
   "task_types": [
-    "H",
-    "K",
-    "L"
+    "D",
+    "E",
+    "N"
   ],
   "task_type_descriptions": {
-    "H": "自宿主任务（eval.scm 调用自身生成程序）",
-    "K": "局部作用域与绑定策略（let/let*/letrec）",
-    "L": "惰性求值与延迟执行（delay/force/thunk）"
+    "D": "递归函数（factorial, fibonacci）",
+    "E": "闭包与高阶函数",
+    "N": "元程序任务（程序生成与apply/eval组合）"
   },
   "feature_flags": {
     "arith": false,
     "vars": true,
     "lambda": true,
     "recursion": true,
-    "higher_order": false,
+    "higher_order": true,
     "condition": true,
-    "multi_layer": true,
-    "self_host": true,
+    "multi_layer": false,
+    "self_host": false,
     "symbolic_list": false,
-    "local_scope": true,
-    "lazy_eval": true
+    "local_scope": false,
+    "lazy_eval": false,
+    "io_basic": false,
+    "meta_program": true
   },
   "deterministic": true,
   "test_cases": [
     {
-      "name": "local_scope_let_star",
-      "input": "scheme program.scm\n(let* ((x 2) (y (+ x 3))) (* y 2))\n",
-      "expected_output": "10\n",
+      "name": "recursive_factorial",
+      "input": "scheme program.scm\n(begin (define fact (lambda (n) (if (= n 0) 1 (* n (fact (- n 1)))))) (fact 5))\n",
+      "expected_output": "120\n",
       "covers": [
-        "K"
+        "D",
+        "F"
       ],
       "required_for_task": true
     },
     {
-      "name": "lazy_delay_force",
-      "input": "scheme program.scm\n(force (delay (+ 40 2)))\n",
-      "expected_output": "42\n",
+      "name": "closure_high_order",
+      "input": "scheme program.scm\n(begin (define make-adder (lambda (x) (lambda (y) (+ x y)))) ((make-adder 10) 5))\n",
+      "expected_output": "15\n",
       "covers": [
-        "L"
+        "E"
       ],
       "required_for_task": true
     },
     {
-      "name": "multi_layer_eval",
-      "input": "scheme eval.scm\nscheme generated_eval.scm\n(+ 10 20)\n",
-      "expected_output": "30\n",
+      "name": "meta_program",
+      "input": "scheme program.scm\n(meta-eval '(+ 8 9))\n",
+      "expected_output": "17\n",
       "covers": [
-        "G",
-        "H",
-        "I"
+        "N"
       ],
       "required_for_task": true
     },

@@ -20,7 +20,9 @@
     "self_host": false,
     "symbolic_list": true,
     "local_scope": false,
-    "lazy_eval": false
+    "lazy_eval": false,
+    "io_basic": false,
+    "meta_program": false
   },
   "deterministic": true,
   "test_cases": [
