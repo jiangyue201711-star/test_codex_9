@@ -1,0 +1,127 @@
+{
+  "generator": "MESIS-Bench eval.scm batch generator",
+  "seed": 20260325,
+  "count": 12,
+  "tasks": [
+    {
+      "task_id": "task_0001",
+      "difficulty": "L1",
+      "task_types": [
+        "A",
+        "B"
+      ],
+      "eval": "tasks/task_0001_eval.scm",
+      "tests": "tasks/task_0001_tests.json"
+    },
+    {
+      "task_id": "task_0002",
+      "difficulty": "L2",
+      "task_types": [
+        "B",
+        "C"
+      ],
+      "eval": "tasks/task_0002_eval.scm",
+      "tests": "tasks/task_0002_tests.json"
+    },
+    {
+      "task_id": "task_0003",
+      "difficulty": "L3",
+      "task_types": [
+        "C",
+        "E"
+      ],
+      "eval": "tasks/task_0003_eval.scm",
+      "tests": "tasks/task_0003_tests.json"
+    },
+    {
+      "task_id": "task_0004",
+      "difficulty": "L4",
+      "task_types": [
+        "D",
+        "F"
+      ],
+      "eval": "tasks/task_0004_eval.scm",
+      "tests": "tasks/task_0004_tests.json"
+    },
+    {
+      "task_id": "task_0005",
+      "difficulty": "L5",
+      "task_types": [
+        "G",
+        "I"
+      ],
+      "eval": "tasks/task_0005_eval.scm",
+      "tests": "tasks/task_0005_tests.json"
+    },
+    {
+      "task_id": "task_0006",
+      "difficulty": "L6",
+      "task_types": [
+        "G",
+        "H"
+      ],
+      "eval": "tasks/task_0006_eval.scm",
+      "tests": "tasks/task_0006_tests.json"
+    },
+    {
+      "task_id": "task_0007",
+      "difficulty": "L7",
+      "task_types": [
+        "H",
+        "I"
+      ],
+      "eval": "tasks/task_0007_eval.scm",
+      "tests": "tasks/task_0007_tests.json"
+    },
+    {
+      "task_id": "task_0008",
+      "difficulty": "L8",
+      "task_types": [
+        "F",
+        "H"
+      ],
+      "eval": "tasks/task_0008_eval.scm",
+      "tests": "tasks/task_0008_tests.json"
+    },
+    {
+      "task_id": "task_0009",
+      "difficulty": "L1",
+      "task_types": [
+        "A",
+        "B"
+      ],
+      "eval": "tasks/task_0009_eval.scm",
+      "tests": "tasks/task_0009_tests.json"
+    },
+    {
+      "task_id": "task_0010",
+      "difficulty": "L2",
+      "task_types": [
+        "B",
+        "C"
+      ],
+      "eval": "tasks/task_0010_eval.scm",
+      "tests": "tasks/task_0010_tests.json"
+    },
+    {
+      "task_id": "task_0011",
+      "difficulty": "L3",
+      "task_types": [
+        "C",
+        "E"
+      ],
+      "eval": "tasks/task_0011_eval.scm",
+      "tests": "tasks/task_0011_tests.json"
+    },
+    {
+      "task_id": "task_0012",
+      "difficulty": "L4",
+      "task_types": [
+        "D",
+        "F"
+      ],
+      "eval": "tasks/task_0012_eval.scm",
+      "tests": "tasks/task_0012_tests.json"
+    }
+  ]
+}

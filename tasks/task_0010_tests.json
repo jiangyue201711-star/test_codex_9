@@ -1,0 +1,63 @@
+{
+  "task_id": "task_0010",
+  "difficulty": "L2",
+  "task_types": [
+    "B",
+    "C"
+  ],
+  "task_type_descriptions": {
+    "B": "变量定义与访问",
+    "C": "函数定义与调用"
+  },
+  "deterministic": true,
+  "test_cases": [
+    {
+      "name": "basic_arithmetic",
+      "input": "scheme program.scm\n(+ 2 3)\n",
+      "expected_output": "5\n",
+      "covers": [
+        "A"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "function_call",
+      "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
+      "expected_output": "10\n",
+      "covers": [
+        "C"
+      ],
+      "required_for_task": true
+    },
+    {
+      "name": "recursive_factorial",
+      "input": "scheme program.scm\n(begin (define fact (lambda (n) (if (= n 0) 1 (* n (fact (- n 1)))))) (fact 5))\n",
+      "expected_output": "120\n",
+      "covers": [
+        "D",
+        "F"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "closure_high_order",
+      "input": "scheme program.scm\n(begin (define make-adder (lambda (x) (lambda (y) (+ x y)))) ((make-adder 10) 5))\n",
+      "expected_output": "15\n",
+      "covers": [
+        "E"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "multi_layer_eval",
+      "input": "scheme eval.scm\nscheme generated_eval.scm\n(+ 10 20)\n",
+      "expected_output": "30\n",
+      "covers": [
+        "G",
+        "H",
+        "I"
+      ],
+      "required_for_task": false
+    }
+  ]
+}
