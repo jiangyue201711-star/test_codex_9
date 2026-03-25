@@ -89,8 +89,16 @@
    (define payload (drop-headers lines)) (define expr-line (if (null? payload) "" (car payload))) (define runtime-lines (if (null? payload) '() (cdr payload))) (values expr-line runtime-lines))
 
  (define (main)
-   (define all-lines (let loop ([acc '()]) (define line (read-line (current-input-port) 'any)) (if (eof-object? line) (reverse acc) (loop (cons line acc)))))
-   (define-values (expr-line runtime-lines) (split-input all-lines))
+   (define args (vector->list (current-command-line-arguments)))
+   (define stdin-lines (let loop ([acc '()]) (define line (read-line (current-input-port) 'any)) (if (eof-object? line) (reverse acc) (loop (cons line acc)))))
+   (define-values (expr-line runtime-lines)
+     (cond
+       [(pair? stdin-lines) (split-input stdin-lines)]
+       [(and (>= (length args) 2) (string-suffix? (car args) ".scm")) (values (cadr args) (cddr args))]
+       [(and (>= (length args) 1) (string-suffix? (car args) ".scm")) (values "" '())]
+       [(pair? args) (values (car args) (cdr args))]
+       [else (values "" '())]))
+   (when (equal? (string-trim expr-line) "") (error "no expression provided: pass via stdin or command line"))
    (define expr (with-input-from-string expr-line (lambda () (read))))
    (define runtime-input (if (null? runtime-lines) "" (string-append (string-join runtime-lines "\n") "\n")))
    (define result (parameterize ([current-input-port (open-input-string runtime-input)]) (m-eval expr global-env)))
