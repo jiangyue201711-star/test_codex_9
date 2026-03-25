@@ -12,19 +12,11 @@
     "N": "元程序任务（程序生成与apply/eval组合）"
   },
   "feature_flags": {
-    "arith": false,
-    "vars": true,
-    "lambda": true,
-    "recursion": true,
-    "higher_order": true,
-    "condition": true,
-    "multi_layer": false,
-    "self_host": false,
     "symbolic_list": false,
-    "local_scope": false,
     "lazy_eval": false,
     "io_basic": false,
-    "meta_program": true
+    "meta_program": true,
+    "self_host_focus": false
   },
   "deterministic": true,
   "test_cases": [

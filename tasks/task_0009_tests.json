@@ -10,19 +10,11 @@
     "M": "标准输入输出任务（read/read-line/display/write）"
   },
   "feature_flags": {
-    "arith": false,
-    "vars": true,
-    "lambda": false,
-    "recursion": false,
-    "higher_order": false,
-    "condition": false,
-    "multi_layer": false,
-    "self_host": false,
     "symbolic_list": false,
-    "local_scope": false,
     "lazy_eval": false,
     "io_basic": true,
-    "meta_program": false
+    "meta_program": false,
+    "self_host_focus": false
   },
   "deterministic": true,
   "test_cases": [

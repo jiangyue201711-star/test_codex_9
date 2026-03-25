@@ -11,19 +11,11 @@
         "M"
       ],
       "feature_flags": {
-        "arith": false,
-        "vars": true,
-        "lambda": false,
-        "recursion": false,
-        "higher_order": false,
-        "condition": false,
-        "multi_layer": false,
-        "self_host": false,
         "symbolic_list": false,
-        "local_scope": false,
         "lazy_eval": false,
         "io_basic": true,
-        "meta_program": false
+        "meta_program": false,
+        "self_host_focus": false
       },
       "eval": "tasks/task_0001_eval.scm",
       "tests": "tasks/task_0001_tests.json"
@@ -36,19 +28,11 @@
         "J"
       ],
       "feature_flags": {
-        "arith": false,
-        "vars": true,
-        "lambda": false,
-        "recursion": false,
-        "higher_order": true,
-        "condition": false,
-        "multi_layer": false,
-        "self_host": false,
         "symbolic_list": true,
-        "local_scope": false,
         "lazy_eval": false,
         "io_basic": false,
-        "meta_program": false
+        "meta_program": false,
+        "self_host_focus": false
       },
       "eval": "tasks/task_0002_eval.scm",
       "tests": "tasks/task_0002_tests.json"
@@ -61,19 +45,11 @@
         "N"
       ],
       "feature_flags": {
-        "arith": false,
-        "vars": false,
-        "lambda": true,
-        "recursion": false,
-        "higher_order": true,
-        "condition": false,
-        "multi_layer": false,
-        "self_host": false,
         "symbolic_list": false,
-        "local_scope": false,
         "lazy_eval": false,
         "io_basic": false,
-        "meta_program": true
+        "meta_program": true,
+        "self_host_focus": false
       },
       "eval": "tasks/task_0003_eval.scm",
       "tests": "tasks/task_0003_tests.json"
@@ -86,19 +62,11 @@
         "K"
       ],
       "feature_flags": {
-        "arith": false,
-        "vars": true,
-        "lambda": true,
-        "recursion": true,
-        "higher_order": false,
-        "condition": true,
-        "multi_layer": false,
-        "self_host": false,
         "symbolic_list": false,
-        "local_scope": true,
         "lazy_eval": false,
         "io_basic": false,
-        "meta_program": false
+        "meta_program": false,
+        "self_host_focus": false
       },
       "eval": "tasks/task_0004_eval.scm",
       "tests": "tasks/task_0004_tests.json"
@@ -111,19 +79,11 @@
         "M"
       ],
       "feature_flags": {
-        "arith": false,
-        "vars": false,
-        "lambda": false,
-        "recursion": false,
-        "higher_order": false,
-        "condition": false,
-        "multi_layer": true,
-        "self_host": false,
         "symbolic_list": false,
-        "local_scope": false,
         "lazy_eval": false,
         "io_basic": true,
-        "meta_program": false
+        "meta_program": false,
+        "self_host_focus": false
       },
       "eval": "tasks/task_0005_eval.scm",
       "tests": "tasks/task_0005_tests.json"
@@ -136,19 +96,11 @@
         "L"
       ],
       "feature_flags": {
-        "arith": false,
-        "vars": false,
-        "lambda": true,
-        "recursion": false,
-        "higher_order": false,
-        "condition": false,
-        "multi_layer": true,
-        "self_host": true,
         "symbolic_list": false,
-        "local_scope": false,
         "lazy_eval": true,
         "io_basic": false,
-        "meta_program": false
+        "meta_program": false,
+        "self_host_focus": true
       },
       "eval": "tasks/task_0006_eval.scm",
       "tests": "tasks/task_0006_tests.json"
@@ -162,19 +114,11 @@
         "N"
       ],
       "feature_flags": {
-        "arith": true,
-        "vars": true,
-        "lambda": true,
-        "recursion": false,
-        "higher_order": true,
-        "condition": true,
-        "multi_layer": true,
-        "self_host": false,
         "symbolic_list": false,
-        "local_scope": false,
         "lazy_eval": true,
         "io_basic": false,
-        "meta_program": true
+        "meta_program": true,
+        "self_host_focus": false
       },
       "eval": "tasks/task_0007_eval.scm",
       "tests": "tasks/task_0007_tests.json"
@@ -188,19 +132,11 @@
         "N"
       ],
       "feature_flags": {
-        "arith": false,
-        "vars": true,
-        "lambda": true,
-        "recursion": true,
-        "higher_order": true,
-        "condition": true,
-        "multi_layer": false,
-        "self_host": false,
         "symbolic_list": false,
-        "local_scope": false,
         "lazy_eval": false,
         "io_basic": false,
-        "meta_program": true
+        "meta_program": true,
+        "self_host_focus": false
       },
       "eval": "tasks/task_0008_eval.scm",
       "tests": "tasks/task_0008_tests.json"
@@ -213,19 +149,11 @@
         "M"
       ],
       "feature_flags": {
-        "arith": false,
-        "vars": true,
-        "lambda": false,
-        "recursion": false,
-        "higher_order": false,
-        "condition": false,
-        "multi_layer": false,
-        "self_host": false,
         "symbolic_list": false,
-        "local_scope": false,
         "lazy_eval": false,
         "io_basic": true,
-        "meta_program": false
+        "meta_program": false,
+        "self_host_focus": false
       },
       "eval": "tasks/task_0009_eval.scm",
       "tests": "tasks/task_0009_tests.json"
@@ -238,19 +166,11 @@
         "M"
       ],
       "feature_flags": {
-        "arith": false,
-        "vars": false,
-        "lambda": false,
-        "recursion": false,
-        "higher_order": true,
-        "condition": false,
-        "multi_layer": false,
-        "self_host": false,
         "symbolic_list": true,
-        "local_scope": false,
         "lazy_eval": false,
         "io_basic": true,
-        "meta_program": false
+        "meta_program": false,
+        "self_host_focus": false
       },
       "eval": "tasks/task_0010_eval.scm",
       "tests": "tasks/task_0010_tests.json"
@@ -263,19 +183,11 @@
         "N"
       ],
       "feature_flags": {
-        "arith": false,
-        "vars": false,
-        "lambda": true,
-        "recursion": false,
-        "higher_order": true,
-        "condition": false,
-        "multi_layer": false,
-        "self_host": false,
         "symbolic_list": false,
-        "local_scope": false,
         "lazy_eval": false,
         "io_basic": false,
-        "meta_program": true
+        "meta_program": true,
+        "self_host_focus": false
       },
       "eval": "tasks/task_0011_eval.scm",
       "tests": "tasks/task_0011_tests.json"
@@ -288,19 +200,11 @@
         "K"
       ],
       "feature_flags": {
-        "arith": false,
-        "vars": true,
-        "lambda": true,
-        "recursion": true,
-        "higher_order": false,
-        "condition": true,
-        "multi_layer": false,
-        "self_host": false,
         "symbolic_list": false,
-        "local_scope": true,
         "lazy_eval": false,
         "io_basic": false,
-        "meta_program": false
+        "meta_program": false,
+        "self_host_focus": false
       },
       "eval": "tasks/task_0012_eval.scm",
       "tests": "tasks/task_0012_tests.json"

@@ -49,67 +49,50 @@ class TaskSpec:
 def feature_flags(spec: TaskSpec) -> dict[str, bool]:
     t = set(spec.task_types)
     return {
-        "arith": bool({"A", "I"} & t),
-        "vars": bool({"B", "I", "D", "K"} & t),
-        "lambda": bool({"C", "E", "I", "D", "K", "L", "N"} & t),
-        "recursion": bool({"D", "K"} & t),
-        "higher_order": bool({"E", "I", "J", "N"} & t),
-        "condition": bool({"F", "D", "I", "K"} & t),
-        "multi_layer": bool({"G", "H", "I"} & t),
-        "self_host": "H" in t,
         "symbolic_list": "J" in t,
-        "local_scope": "K" in t,
         "lazy_eval": "L" in t,
         "io_basic": "M" in t,
         "meta_program": "N" in t,
+        "self_host_focus": "H" in t,
     }
 
 
 def primitive_block(flags: dict[str, bool]) -> str:
+    # Core primitives are always enabled to guarantee meta-circular capability
     core = [
+        "(cons '+ +)", "(cons '- -)", "(cons '* *)", "(cons '/ /)",
+        "(cons '= =)", "(cons '< <)", "(cons '<= <=)", "(cons '> >)", "(cons '>= >=)",
         "(cons 'display display)", "(cons 'newline newline)", "(cons 'write write)",
+        "(cons 'read read)", "(cons 'read-line read-line)",
         "(cons 'list list)", "(cons 'cons cons)", "(cons 'car car)", "(cons 'cdr cdr)",
         "(cons 'null? null?)", "(cons 'pair? pair?)", "(cons 'number? number?)", "(cons 'symbol? symbol?)",
-        "(cons 'not not)",
+        "(cons 'not not)", "(cons 'map map)", "(cons 'apply apply)",
     ]
-    if flags["arith"]:
-        core += ["(cons '+ +)", "(cons '- -)", "(cons '* *)", "(cons '/ /)", "(cons '= =)", "(cons '< <)", "(cons '<= <=)", "(cons '> >)", "(cons '>= >=)"]
-    if flags["higher_order"]:
-        core += ["(cons 'map map)", "(cons 'apply apply)"]
     if flags["symbolic_list"]:
         core += ["(cons 'append append)", "(cons 'length length)", "(cons 'reverse reverse)", "(cons 'memq memq)"]
     if flags["lazy_eval"]:
         core += ["(cons 'force force)"]
-    if flags["io_basic"]:
-        core += ["(cons 'read read)", "(cons 'read-line read-line)"]
     return "\n   ".join(core)
 
 
-def eval_special_forms(flags: dict[str, bool]) -> str:
+def special_forms_block(flags: dict[str, bool]) -> str:
     forms = [
-        "[(number? exp) exp]", "[(boolean? exp) exp]", "[(string? exp) exp]",
-        "[(symbol? exp) (lookup env exp)]", "[(not (pair? exp)) exp]", "[(eq? (car exp) 'quote) (cadr exp)]",
+        "[(number? exp) exp]",
+        "[(boolean? exp) exp]",
+        "[(string? exp) exp]",
+        "[(symbol? exp) (lookup env exp)]",
+        "[(not (pair? exp)) exp]",
+        "[(eq? (car exp) 'quote) (cadr exp)]",
+        "[(eq? (car exp) 'if) (if (m-eval (cadr exp) env) (m-eval (caddr exp) env) (m-eval (cadddr exp) env))]",
+        "[(eq? (car exp) 'cond) (m-eval (cond->if (cdr exp)) env)]",
         "[(eq? (car exp) 'begin) (eval-sequence (cdr exp) env)]",
+        "[(eq? (car exp) 'define) (let ([name (cadr exp)] [rhs (caddr exp)]) (let ([value (m-eval rhs env)]) (set! global-env (cons (cons name value) global-env)) name))]",
+        "[(eq? (car exp) 'set!) (let ([name (cadr exp)] [rhs (caddr exp)]) (set-var env name (m-eval rhs env)) 'ok)]",
+        "[(eq? (car exp) 'lambda) (make-closure (cadr exp) (cddr exp) env)]",
+        "[(eq? (car exp) 'let) (let* ([bindings (cadr exp)] [names (map car bindings)] [vals (map (lambda (b) (m-eval (cadr b) env)) bindings)] [n-env (extend-env names vals env)]) (eval-sequence (cddr exp) n-env))]",
+        "[(eq? (car exp) 'let*) (let loop ([bs (cadr exp)] [e env]) (if (null? bs) (eval-sequence (cddr exp) e) (let* ([b (car bs)] [n (car b)] [v (m-eval (cadr b) e)]) (loop (cdr bs) (extend-env (list n) (list v) e)))))]",
+        "[(eq? (car exp) 'letrec) (let* ([binding (car (cadr exp))] [name (car binding)] [rhs (cadr binding)]) (set! global-env (cons (cons name 'pending) global-env)) (set-var global-env name (m-eval rhs global-env)) (eval-sequence (cddr exp) global-env))]",
     ]
-    if flags["condition"]:
-        forms += [
-            "[(eq? (car exp) 'if) (if (m-eval (cadr exp) env) (m-eval (caddr exp) env) (m-eval (cadddr exp) env))]",
-            "[(eq? (car exp) 'cond) (m-eval (cond->if (cdr exp)) env)]",
-        ]
-    if flags["vars"]:
-        forms += [
-            "[(eq? (car exp) 'define) (let ([name (cadr exp)] [rhs (caddr exp)]) (let ([value (m-eval rhs env)]) (set! global-env (cons (cons name value) global-env)) name))]",
-            "[(eq? (car exp) 'set!) (let ([name (cadr exp)] [rhs (caddr exp)]) (set-var env name (m-eval rhs env)) 'ok)]",
-        ]
-    if flags["lambda"]:
-        forms.append("[(eq? (car exp) 'lambda) (make-closure (cadr exp) (cddr exp) env)]")
-    if flags["local_scope"]:
-        forms += [
-            "[(eq? (car exp) 'let) (let* ([bindings (cadr exp)] [names (map car bindings)] [vals (map (lambda (b) (m-eval (cadr b) env)) bindings)] [n-env (extend-env names vals env)]) (eval-sequence (cddr exp) n-env))]",
-            "[(eq? (car exp) 'let*) (let loop ([bs (cadr exp)] [e env]) (if (null? bs) (eval-sequence (cddr exp) e) (let* ([b (car bs)] [n (car b)] [v (m-eval (cadr b) e)]) (loop (cdr bs) (extend-env (list n) (list v) e)))))]",
-        ]
-    if flags["recursion"]:
-        forms.append("[(eq? (car exp) 'letrec) (let* ([binding (car (cadr exp))] [name (car binding)] [rhs (cadr binding)]) (set! global-env (cons (cons name 'pending) global-env)) (set-var global-env name (m-eval rhs global-env)) (eval-sequence (cddr exp) global-env))]")
     if flags["lazy_eval"]:
         forms.append("[(eq? (car exp) 'delay) (delay (m-eval (cadr exp) env))]")
     if flags["meta_program"]:
@@ -120,47 +103,24 @@ def eval_special_forms(flags: dict[str, bool]) -> str:
 
 def evaluator_source(spec: TaskSpec) -> str:
     flags = feature_flags(spec)
-    cond_helper = ""
-    if flags["condition"]:
-        cond_helper = "(define (cond->if clauses) (if (null? clauses) #f (let ([clause (car clauses)] [rest (cdr clauses)]) (if (eq? (car clause) 'else) (cons 'begin (cdr clause)) (list 'if (car clause) (cons 'begin (cdr clause)) (cond->if rest))))))"
-
-    set_var_impl = "(define (set-var env sym val) (cond [(null? env) (error \"cannot set! unbound variable\" sym)] [(eq? (caar env) sym) (set-cdr! (car env) val)] [else (set-var (cdr env) sym val)]))" if flags["vars"] or flags["recursion"] else ""
-    lambda_impl = "(define (closure? x) (and (pair? x) (eq? (car x) 'closure))) (define (make-closure params body env) (list 'closure params body env))" if flags["lambda"] else ""
-
-    resolver = dedent(
-        """
-        (define (header-line? s)
-          (define t (string-trim s))
-          (or (string-prefix? t "scheme ") (string-prefix? t "eval.scm ")))
-
-        (define (split-input lines allow-multi)
-          (define (drop-headers xs)
-            (if (and allow-multi (pair? xs) (header-line? (car xs)))
-                (drop-headers (cdr xs))
-                xs))
-          (define payload (if allow-multi (drop-headers lines) (if (and (pair? lines) (header-line? (car lines))) (cdr lines) lines)))
-          (define expr-line (if (null? payload) "" (car payload)))
-          (define runtime-lines (if (null? payload) '() (cdr payload)))
-          (values expr-line runtime-lines))
-        """
-    ).strip()
-
     return dedent(f"""
     #lang racket
     ;; Auto-generated by MESIS-Bench generator
     ;; task_id={spec.task_id:04d}, difficulty=L{spec.difficulty}, types=[{' '.join(spec.task_types)}]
     ;; dynamic_features={json.dumps(flags, ensure_ascii=False)}
+    ;; NOTE: Core meta-circular evaluator features are always enabled for every task.
 
     (define (extend-env vars vals base) (append (map cons vars vals) base))
     (define (lookup env sym) (cond [(null? env) (error "unbound variable" sym)] [(eq? (caar env) sym) (cdar env)] [else (lookup (cdr env) sym)]))
-    {set_var_impl}
+    (define (set-var env sym val) (cond [(null? env) (error "cannot set! unbound variable" sym)] [(eq? (caar env) sym) (set-cdr! (car env) val)] [else (set-var (cdr env) sym val)]))
 
     (define primitive-env
       (list
        {primitive_block(flags)}))
     (define global-env primitive-env)
 
-    {lambda_impl}
+    (define (closure? x) (and (pair? x) (eq? (car x) 'closure)))
+    (define (make-closure params body env) (list 'closure params body env))
 
     (define (apply-proc proc args)
       (cond
@@ -173,13 +133,31 @@ def evaluator_source(spec: TaskSpec) -> str:
     (define (eval-sequence exps env)
       (cond [(null? exps) '()] [(null? (cdr exps)) (m-eval (car exps) env)] [else (m-eval (car exps) env) (eval-sequence (cdr exps) env)]))
 
-    {cond_helper}
+    (define (cond->if clauses)
+      (if (null? clauses) #f
+          (let ([clause (car clauses)] [rest (cdr clauses)])
+            (if (eq? (car clause) 'else)
+                (cons 'begin (cdr clause))
+                (list 'if (car clause) (cons 'begin (cdr clause)) (cond->if rest))))))
 
     (define (m-eval exp env)
       (cond
-        {eval_special_forms(flags)}))
+        {special_forms_block(flags)}))
 
-    {resolver}
+    ;; Always support layered input headers and runtime stdin forwarding.
+    (define (header-line? s)
+      (define t (string-trim s))
+      (or (string-prefix? t "scheme ") (string-prefix? t "eval.scm ")))
+
+    (define (split-input lines)
+      (define (drop-headers xs)
+        (if (and (pair? xs) (header-line? (car xs)))
+            (drop-headers (cdr xs))
+            xs))
+      (define payload (drop-headers lines))
+      (define expr-line (if (null? payload) "" (car payload)))
+      (define runtime-lines (if (null? payload) '() (cdr payload)))
+      (values expr-line runtime-lines))
 
     (define (main)
       (define all-lines
@@ -187,8 +165,7 @@ def evaluator_source(spec: TaskSpec) -> str:
           (define line (read-line (current-input-port) 'any))
           (if (eof-object? line) (reverse acc) (loop (cons line acc)))))
 
-      (define allow-multi {'#t' if flags['multi_layer'] else '#f'})
-      (define-values (expr-line runtime-lines) (split-input all-lines allow-multi))
+      (define-values (expr-line runtime-lines) (split-input all-lines))
       (define expr (with-input-from-string expr-line (lambda () (read))))
       (define runtime-input (if (null? runtime-lines) "" (string-append (string-join runtime-lines "\\n") "\\n")))
       (define result (parameterize ([current-input-port (open-input-string runtime-input)])

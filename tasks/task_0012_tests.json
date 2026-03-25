@@ -10,19 +10,11 @@
     "K": "局部作用域与绑定策略（let/let*/letrec）"
   },
   "feature_flags": {
-    "arith": false,
-    "vars": true,
-    "lambda": true,
-    "recursion": true,
-    "higher_order": false,
-    "condition": true,
-    "multi_layer": false,
-    "self_host": false,
     "symbolic_list": false,
-    "local_scope": true,
     "lazy_eval": false,
     "io_basic": false,
-    "meta_program": false
+    "meta_program": false,
+    "self_host_focus": false
   },
   "deterministic": true,
   "test_cases": [
