@@ -6,6 +6,9 @@
     "L",
     "N"
   ],
+  "variants": {
+    "arith": "basic"
+  },
   "task_type_descriptions": {
     "I": "组合任务（算术 + 函数 + eval 嵌套）",
     "L": "惰性求值与延迟执行（delay/force/thunk）",
@@ -16,7 +19,8 @@
     "lazy_eval": true,
     "io_basic": false,
     "meta_program": true,
-    "self_host_focus": false
+    "self_host_focus": false,
+    "arith_modulo": false
   },
   "deterministic": true,
   "test_cases": [

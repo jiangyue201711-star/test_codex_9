@@ -5,6 +5,9 @@
     "F",
     "K"
   ],
+  "variants": {
+    "arith": "basic"
+  },
   "task_type_descriptions": {
     "F": "条件分支 (if, cond)",
     "K": "局部作用域与绑定策略（let/let*/letrec）"
@@ -14,7 +17,8 @@
     "lazy_eval": false,
     "io_basic": false,
     "meta_program": false,
-    "self_host_focus": false
+    "self_host_focus": false,
+    "arith_modulo": false
   },
   "deterministic": true,
   "test_cases": [

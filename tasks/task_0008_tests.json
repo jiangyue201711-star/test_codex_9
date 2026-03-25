@@ -2,12 +2,15 @@
   "task_id": "task_0008",
   "difficulty": "L8",
   "task_types": [
-    "D",
+    "A",
     "E",
     "N"
   ],
+  "variants": {
+    "arith": "modulo"
+  },
   "task_type_descriptions": {
-    "D": "递归函数（factorial, fibonacci）",
+    "A": "基础算术 (+, -, *, /)",
     "E": "闭包与高阶函数",
     "N": "元程序任务（程序生成与apply/eval组合）"
   },
@@ -16,17 +19,17 @@
     "lazy_eval": false,
     "io_basic": false,
     "meta_program": true,
-    "self_host_focus": false
+    "self_host_focus": false,
+    "arith_modulo": true
   },
   "deterministic": true,
   "test_cases": [
     {
-      "name": "recursive_factorial",
-      "input": "scheme program.scm\n(begin (define fact (lambda (n) (if (= n 0) 1 (* n (fact (- n 1)))))) (fact 5))\n",
-      "expected_output": "120\n",
+      "name": "basic_arithmetic",
+      "input": "scheme program.scm\n(+ 2 3)\n",
+      "expected_output": "5\n",
       "covers": [
-        "D",
-        "F"
+        "A"
       ],
       "required_for_task": true
     },
@@ -49,13 +52,14 @@
       "required_for_task": true
     },
     {
-      "name": "basic_arithmetic",
-      "input": "scheme program.scm\n(+ 2 3)\n",
-      "expected_output": "5\n",
+      "name": "arithmetic_modulo",
+      "input": "scheme program.scm\n(modulo 17 5)\n",
+      "expected_output": "2\n",
       "covers": [
-        "A"
+        "A",
+        "I"
       ],
-      "required_for_task": false
+      "required_for_task": true
     },
     {
       "name": "variable_access",

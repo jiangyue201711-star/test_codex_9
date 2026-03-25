@@ -5,6 +5,9 @@
     "C",
     "N"
   ],
+  "variants": {
+    "arith": "basic"
+  },
   "task_type_descriptions": {
     "C": "函数定义与调用",
     "N": "元程序任务（程序生成与apply/eval组合）"
@@ -14,7 +17,8 @@
     "lazy_eval": false,
     "io_basic": false,
     "meta_program": true,
-    "self_host_focus": false
+    "self_host_focus": false,
+    "arith_modulo": false
   },
   "deterministic": true,
   "test_cases": [

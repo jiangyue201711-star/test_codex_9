@@ -5,6 +5,9 @@
     "B",
     "J"
   ],
+  "variants": {
+    "arith": "basic"
+  },
   "task_type_descriptions": {
     "B": "变量定义与访问",
     "J": "符号与列表程序（quote/list/map/filter/fold）"
@@ -14,7 +17,8 @@
     "lazy_eval": false,
     "io_basic": false,
     "meta_program": false,
-    "self_host_focus": false
+    "self_host_focus": false,
+    "arith_modulo": false
   },
   "deterministic": true,
   "test_cases": [

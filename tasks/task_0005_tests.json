@@ -5,6 +5,9 @@
     "G",
     "M"
   ],
+  "variants": {
+    "arith": "basic"
+  },
   "task_type_descriptions": {
     "G": "多层 eval 调用自身",
     "M": "标准输入输出任务（read/read-line/display/write）"
@@ -14,7 +17,8 @@
     "lazy_eval": false,
     "io_basic": true,
     "meta_program": false,
-    "self_host_focus": false
+    "self_host_focus": false,
+    "arith_modulo": false
   },
   "deterministic": true,
   "test_cases": [

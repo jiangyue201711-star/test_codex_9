@@ -7,15 +7,19 @@
       "task_id": "task_0001",
       "difficulty": "L1",
       "task_types": [
-        "B",
+        "A",
         "M"
       ],
+      "variants": {
+        "arith": "basic"
+      },
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
         "io_basic": true,
         "meta_program": false,
-        "self_host_focus": false
+        "self_host_focus": false,
+        "arith_modulo": false
       },
       "eval": "tasks/task_0001_eval.scm",
       "tests": "tasks/task_0001_tests.json"
@@ -27,12 +31,16 @@
         "B",
         "J"
       ],
+      "variants": {
+        "arith": "basic"
+      },
       "feature_flags": {
         "symbolic_list": true,
         "lazy_eval": false,
         "io_basic": false,
         "meta_program": false,
-        "self_host_focus": false
+        "self_host_focus": false,
+        "arith_modulo": false
       },
       "eval": "tasks/task_0002_eval.scm",
       "tests": "tasks/task_0002_tests.json"
@@ -44,12 +52,16 @@
         "C",
         "N"
       ],
+      "variants": {
+        "arith": "basic"
+      },
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
         "io_basic": false,
         "meta_program": true,
-        "self_host_focus": false
+        "self_host_focus": false,
+        "arith_modulo": false
       },
       "eval": "tasks/task_0003_eval.scm",
       "tests": "tasks/task_0003_tests.json"
@@ -61,12 +73,16 @@
         "F",
         "K"
       ],
+      "variants": {
+        "arith": "basic"
+      },
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
         "io_basic": false,
         "meta_program": false,
-        "self_host_focus": false
+        "self_host_focus": false,
+        "arith_modulo": false
       },
       "eval": "tasks/task_0004_eval.scm",
       "tests": "tasks/task_0004_tests.json"
@@ -78,12 +94,16 @@
         "G",
         "M"
       ],
+      "variants": {
+        "arith": "basic"
+      },
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
         "io_basic": true,
         "meta_program": false,
-        "self_host_focus": false
+        "self_host_focus": false,
+        "arith_modulo": false
       },
       "eval": "tasks/task_0005_eval.scm",
       "tests": "tasks/task_0005_tests.json"
@@ -95,12 +115,16 @@
         "H",
         "L"
       ],
+      "variants": {
+        "arith": "basic"
+      },
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": true,
         "io_basic": false,
         "meta_program": false,
-        "self_host_focus": true
+        "self_host_focus": true,
+        "arith_modulo": false
       },
       "eval": "tasks/task_0006_eval.scm",
       "tests": "tasks/task_0006_tests.json"
@@ -113,12 +137,16 @@
         "L",
         "N"
       ],
+      "variants": {
+        "arith": "basic"
+      },
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": true,
         "io_basic": false,
         "meta_program": true,
-        "self_host_focus": false
+        "self_host_focus": false,
+        "arith_modulo": false
       },
       "eval": "tasks/task_0007_eval.scm",
       "tests": "tasks/task_0007_tests.json"
@@ -127,16 +155,20 @@
       "task_id": "task_0008",
       "difficulty": "L8",
       "task_types": [
-        "D",
+        "A",
         "E",
         "N"
       ],
+      "variants": {
+        "arith": "modulo"
+      },
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
         "io_basic": false,
         "meta_program": true,
-        "self_host_focus": false
+        "self_host_focus": false,
+        "arith_modulo": true
       },
       "eval": "tasks/task_0008_eval.scm",
       "tests": "tasks/task_0008_tests.json"
@@ -145,15 +177,19 @@
       "task_id": "task_0009",
       "difficulty": "L1",
       "task_types": [
-        "B",
+        "A",
         "M"
       ],
+      "variants": {
+        "arith": "basic"
+      },
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
         "io_basic": true,
         "meta_program": false,
-        "self_host_focus": false
+        "self_host_focus": false,
+        "arith_modulo": false
       },
       "eval": "tasks/task_0009_eval.scm",
       "tests": "tasks/task_0009_tests.json"
@@ -165,12 +201,16 @@
         "J",
         "M"
       ],
+      "variants": {
+        "arith": "basic"
+      },
       "feature_flags": {
         "symbolic_list": true,
         "lazy_eval": false,
         "io_basic": true,
         "meta_program": false,
-        "self_host_focus": false
+        "self_host_focus": false,
+        "arith_modulo": false
       },
       "eval": "tasks/task_0010_eval.scm",
       "tests": "tasks/task_0010_tests.json"
@@ -182,12 +222,16 @@
         "E",
         "N"
       ],
+      "variants": {
+        "arith": "basic"
+      },
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
         "io_basic": false,
         "meta_program": true,
-        "self_host_focus": false
+        "self_host_focus": false,
+        "arith_modulo": false
       },
       "eval": "tasks/task_0011_eval.scm",
       "tests": "tasks/task_0011_tests.json"
@@ -199,12 +243,16 @@
         "F",
         "K"
       ],
+      "variants": {
+        "arith": "basic"
+      },
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
         "io_basic": false,
         "meta_program": false,
-        "self_host_focus": false
+        "self_host_focus": false,
+        "arith_modulo": false
       },
       "eval": "tasks/task_0012_eval.scm",
       "tests": "tasks/task_0012_tests.json"
