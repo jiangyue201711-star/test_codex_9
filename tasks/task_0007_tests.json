@@ -2,37 +2,30 @@
   "task_id": "task_0007",
   "difficulty": "L7",
   "task_types": [
+    "H",
     "I",
-    "L",
     "N"
   ],
   "variants": {
     "arith": "basic"
   },
   "task_type_descriptions": {
+    "H": "自宿主任务（eval.scm 调用自身生成程序）",
     "I": "组合任务（算术 + 函数 + eval 嵌套）",
-    "L": "惰性求值与延迟执行（delay/force/thunk）",
     "N": "元程序任务（程序生成与apply/eval组合）"
   },
   "feature_flags": {
     "symbolic_list": false,
-    "lazy_eval": true,
+    "lazy_eval": false,
     "io_basic": false,
     "meta_program": true,
-    "self_host_focus": false,
+    "loop_syntax": false,
+    "vector_ds": false,
+    "record_ds": false,
     "arith_modulo": false
   },
   "deterministic": true,
   "test_cases": [
-    {
-      "name": "lazy_delay_force",
-      "input": "scheme program.scm\n(force (delay (+ 40 2)))\n",
-      "expected_output": "42\n",
-      "covers": [
-        "L"
-      ],
-      "required_for_task": true
-    },
     {
       "name": "meta_program",
       "input": "scheme program.scm\n(meta-eval '(+ 8 9))\n",
@@ -68,6 +61,15 @@
       "expected_output": "12\n",
       "covers": [
         "B"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "function_call",
+      "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
+      "expected_output": "10\n",
+      "covers": [
+        "C"
       ],
       "required_for_task": false
     }

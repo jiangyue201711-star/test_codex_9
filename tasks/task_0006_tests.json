@@ -2,22 +2,24 @@
   "task_id": "task_0006",
   "difficulty": "L6",
   "task_types": [
-    "H",
-    "L"
+    "L",
+    "Q"
   ],
   "variants": {
     "arith": "basic"
   },
   "task_type_descriptions": {
-    "H": "自宿主任务（eval.scm 调用自身生成程序）",
-    "L": "惰性求值与延迟执行（delay/force/thunk）"
+    "L": "惰性求值与延迟执行（delay/force/thunk）",
+    "Q": "结构体/记录数据结构（hash作为record）"
   },
   "feature_flags": {
     "symbolic_list": false,
     "lazy_eval": true,
     "io_basic": false,
     "meta_program": false,
-    "self_host_focus": true,
+    "loop_syntax": false,
+    "vector_ds": false,
+    "record_ds": true,
     "arith_modulo": false
   },
   "deterministic": true,
@@ -32,13 +34,11 @@
       "required_for_task": true
     },
     {
-      "name": "multi_layer_eval",
-      "input": "scheme eval.scm\nscheme generated_eval.scm\n(+ 10 20)\n",
-      "expected_output": "30\n",
+      "name": "record_hash_ops",
+      "input": "scheme program.scm\n(hash-ref (hash 'x 10 'y 20) 'y)\n",
+      "expected_output": "20\n",
       "covers": [
-        "G",
-        "H",
-        "I"
+        "Q"
       ],
       "required_for_task": true
     },

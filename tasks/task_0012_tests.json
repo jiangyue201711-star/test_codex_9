@@ -3,21 +3,23 @@
   "difficulty": "L4",
   "task_types": [
     "F",
-    "K"
+    "N"
   ],
   "variants": {
     "arith": "basic"
   },
   "task_type_descriptions": {
     "F": "条件分支 (if, cond)",
-    "K": "局部作用域与绑定策略（let/let*/letrec）"
+    "N": "元程序任务（程序生成与apply/eval组合）"
   },
   "feature_flags": {
     "symbolic_list": false,
     "lazy_eval": false,
     "io_basic": false,
-    "meta_program": false,
-    "self_host_focus": false,
+    "meta_program": true,
+    "loop_syntax": false,
+    "vector_ds": false,
+    "record_ds": false,
     "arith_modulo": false
   },
   "deterministic": true,
@@ -33,11 +35,11 @@
       "required_for_task": true
     },
     {
-      "name": "local_scope_let_star",
-      "input": "scheme program.scm\n(let* ((x 2) (y (+ x 3))) (* y 2))\n",
-      "expected_output": "10\n",
+      "name": "meta_program",
+      "input": "scheme program.scm\n(meta-eval '(+ 8 9))\n",
+      "expected_output": "17\n",
       "covers": [
-        "K"
+        "N"
       ],
       "required_for_task": true
     },

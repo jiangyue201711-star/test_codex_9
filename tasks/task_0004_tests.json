@@ -2,22 +2,24 @@
   "task_id": "task_0004",
   "difficulty": "L4",
   "task_types": [
-    "F",
-    "K"
+    "D",
+    "O"
   ],
   "variants": {
     "arith": "basic"
   },
   "task_type_descriptions": {
-    "F": "条件分支 (if, cond)",
-    "K": "局部作用域与绑定策略（let/let*/letrec）"
+    "D": "递归函数（factorial, fibonacci）",
+    "O": "循环控制语法（for/while）"
   },
   "feature_flags": {
     "symbolic_list": false,
     "lazy_eval": false,
     "io_basic": false,
     "meta_program": false,
-    "self_host_focus": false,
+    "loop_syntax": true,
+    "vector_ds": false,
+    "record_ds": false,
     "arith_modulo": false
   },
   "deterministic": true,
@@ -33,11 +35,11 @@
       "required_for_task": true
     },
     {
-      "name": "local_scope_let_star",
-      "input": "scheme program.scm\n(let* ((x 2) (y (+ x 3))) (* y 2))\n",
-      "expected_output": "10\n",
+      "name": "while_loop",
+      "input": "scheme program.scm\n(begin (define i 0) (define s 0) (while (< i 4) (set! s (+ s i)) (set! i (+ i 1))) s)\n",
+      "expected_output": "6\n",
       "covers": [
-        "K"
+        "O"
       ],
       "required_for_task": true
     },

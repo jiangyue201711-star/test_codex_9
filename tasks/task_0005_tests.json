@@ -3,31 +3,33 @@
   "difficulty": "L5",
   "task_types": [
     "G",
-    "M"
+    "P"
   ],
   "variants": {
     "arith": "basic"
   },
   "task_type_descriptions": {
     "G": "多层 eval 调用自身",
-    "M": "标准输入输出任务（read/read-line/display/write）"
+    "P": "数组数据结构（vector）"
   },
   "feature_flags": {
     "symbolic_list": false,
     "lazy_eval": false,
-    "io_basic": true,
+    "io_basic": false,
     "meta_program": false,
-    "self_host_focus": false,
+    "loop_syntax": false,
+    "vector_ds": true,
+    "record_ds": false,
     "arith_modulo": false
   },
   "deterministic": true,
   "test_cases": [
     {
-      "name": "io_read_line",
-      "input": "scheme program.scm\n(begin (display (read-line)) (newline) 0)\nhello-mesis\n",
-      "expected_output": "hello-mesis\n0\n",
+      "name": "vector_ops",
+      "input": "scheme program.scm\n(begin (define v (vector 1 2 3)) (vector-set! v 1 7) (vector-ref v 1))\n",
+      "expected_output": "7\n",
       "covers": [
-        "M"
+        "P"
       ],
       "required_for_task": true
     },

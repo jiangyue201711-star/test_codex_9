@@ -25,6 +25,9 @@ TASK_TYPES = {
     "L": "惰性求值与延迟执行（delay/force/thunk）",
     "M": "标准输入输出任务（read/read-line/display/write）",
     "N": "元程序任务（程序生成与apply/eval组合）",
+    "O": "循环控制语法（for/while）",
+    "P": "数组数据结构（vector）",
+    "Q": "结构体/记录数据结构（hash作为record）",
 }
 
 ARITH_VARIANTS = {
@@ -34,13 +37,13 @@ ARITH_VARIANTS = {
 
 DIFFICULTY_LEVELS = {
     1: ["A", "B", "M"],
-    2: ["B", "C", "J", "M"],
-    3: ["C", "E", "J", "N"],
-    4: ["D", "F", "K", "N"],
-    5: ["G", "I", "K", "M"],
-    6: ["H", "G", "L", "M"],
-    7: ["G", "H", "I", "K", "L", "N"],
-    8: ["A", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N"],
+    2: ["B", "C", "J", "M", "P"],
+    3: ["C", "E", "J", "N", "Q"],
+    4: ["D", "F", "K", "N", "O"],
+    5: ["G", "I", "K", "M", "P"],
+    6: ["H", "G", "L", "M", "Q"],
+    7: ["G", "H", "I", "K", "L", "N", "O", "P"],
+    8: ["A", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q"],
 }
 
 
@@ -52,13 +55,12 @@ class TaskSpec:
     variants: dict[str, str]
 
 
-def choose_variants(task_types: list[str], rng: random.Random, task_id: int) -> dict[str, str]:
-    variants = {}
+def choose_variants(task_types: list[str], task_id: int) -> dict[str, str]:
     if "A" in task_types or "I" in task_types:
-        variants["arith"] = "modulo" if task_id % 2 == 0 else "basic"
+        arith = "modulo" if task_id % 2 == 0 else "basic"
     else:
-        variants["arith"] = "basic"
-    return variants
+        arith = "basic"
+    return {"arith": arith}
 
 
 def feature_flags(spec: TaskSpec) -> dict[str, bool]:
@@ -68,21 +70,18 @@ def feature_flags(spec: TaskSpec) -> dict[str, bool]:
         "lazy_eval": "L" in t,
         "io_basic": "M" in t,
         "meta_program": "N" in t,
-        "self_host_focus": "H" in t,
+        "loop_syntax": "O" in t,
+        "vector_ds": "P" in t,
+        "record_ds": "Q" in t,
         "arith_modulo": spec.variants.get("arith") == "modulo",
     }
 
 
 def primitive_block(flags: dict[str, bool], variants: dict[str, str]) -> str:
-    arith_ops = ARITH_VARIANTS[variants["arith"]]
     arith_map = {
-        "+": "(cons '+ +)",
-        "-": "(cons '- -)",
-        "*": "(cons '* *)",
-        "/": "(cons '/ /)",
-        "modulo": "(cons 'modulo modulo)",
+        "+": "(cons '+ +)", "-": "(cons '- -)", "*": "(cons '* *)", "/": "(cons '/ /)", "modulo": "(cons 'modulo modulo)"
     }
-    core = [arith_map[op] for op in arith_ops] + [
+    core = [arith_map[op] for op in ARITH_VARIANTS[variants["arith"]]] + [
         "(cons '= =)", "(cons '< <)", "(cons '<= <=)", "(cons '> >)", "(cons '>= >=)",
         "(cons 'display display)", "(cons 'newline newline)", "(cons 'write write)",
         "(cons 'read read)", "(cons 'read-line read-line)",
@@ -94,13 +93,17 @@ def primitive_block(flags: dict[str, bool], variants: dict[str, str]) -> str:
         core += ["(cons 'append append)", "(cons 'length length)", "(cons 'reverse reverse)", "(cons 'memq memq)"]
     if flags["lazy_eval"]:
         core += ["(cons 'force force)"]
+    if flags["vector_ds"]:
+        core += ["(cons 'vector vector)", "(cons 'make-vector make-vector)", "(cons 'vector-ref vector-ref)", "(cons 'vector-set! vector-set!)", "(cons 'vector-length vector-length)"]
+    if flags["record_ds"]:
+        core += ["(cons 'hash hash)", "(cons 'hash-ref hash-ref)", "(cons 'hash-set hash-set)"]
     return "\n   ".join(core)
 
 
 def special_forms_block(flags: dict[str, bool]) -> str:
     forms = [
-        "[(number? exp) exp]", "[(boolean? exp) exp]", "[(string? exp) exp]",
-        "[(symbol? exp) (lookup env exp)]", "[(not (pair? exp)) exp]", "[(eq? (car exp) 'quote) (cadr exp)]",
+        "[(number? exp) exp]", "[(boolean? exp) exp]", "[(string? exp) exp]", "[(symbol? exp) (lookup env exp)]",
+        "[(not (pair? exp)) exp]", "[(eq? (car exp) 'quote) (cadr exp)]",
         "[(eq? (car exp) 'if) (if (m-eval (cadr exp) env) (m-eval (caddr exp) env) (m-eval (cadddr exp) env))]",
         "[(eq? (car exp) 'cond) (m-eval (cond->if (cdr exp)) env)]",
         "[(eq? (car exp) 'begin) (eval-sequence (cdr exp) env)]",
@@ -111,6 +114,11 @@ def special_forms_block(flags: dict[str, bool]) -> str:
         "[(eq? (car exp) 'let*) (let loop ([bs (cadr exp)] [e env]) (if (null? bs) (eval-sequence (cddr exp) e) (let* ([b (car bs)] [n (car b)] [v (m-eval (cadr b) e)]) (loop (cdr bs) (extend-env (list n) (list v) e)))))]",
         "[(eq? (car exp) 'letrec) (let* ([binding (car (cadr exp))] [name (car binding)] [rhs (cadr binding)]) (set! global-env (cons (cons name 'pending) global-env)) (set-var global-env name (m-eval rhs global-env)) (eval-sequence (cddr exp) global-env))]",
     ]
+    if flags["loop_syntax"]:
+        forms += [
+            "[(eq? (car exp) 'while) (let loop () (if (m-eval (cadr exp) env) (begin (eval-sequence (cddr exp) env) (loop)) 'done))]",
+            "[(eq? (car exp) 'for) (let* ([spec (cadr exp)] [v (car spec)] [s (m-eval (cadr spec) env)] [e (m-eval (caddr spec) env)]) (let loop ([i s]) (if (> i e) 'done (begin (set! global-env (cons (cons v i) global-env)) (eval-sequence (cddr exp) global-env) (loop (+ i 1))))))]",
+        ]
     if flags["lazy_eval"]:
         forms.append("[(eq? (car exp) 'delay) (delay (m-eval (cadr exp) env))]")
     if flags["meta_program"]:
@@ -201,6 +209,9 @@ def base_test_pool(spec: TaskSpec) -> list[dict]:
         {"name": "lazy_delay_force", "input": "scheme program.scm\n(force (delay (+ 40 2)))\n", "expected_output": "42\n", "covers": ["L"]},
         {"name": "io_read_line", "input": "scheme program.scm\n(begin (display (read-line)) (newline) 0)\nhello-mesis\n", "expected_output": "hello-mesis\n0\n", "covers": ["M"]},
         {"name": "meta_program", "input": "scheme program.scm\n(meta-eval '(+ 8 9))\n", "expected_output": "17\n", "covers": ["N"]},
+        {"name": "while_loop", "input": "scheme program.scm\n(begin (define i 0) (define s 0) (while (< i 4) (set! s (+ s i)) (set! i (+ i 1))) s)\n", "expected_output": "6\n", "covers": ["O"]},
+        {"name": "vector_ops", "input": "scheme program.scm\n(begin (define v (vector 1 2 3)) (vector-set! v 1 7) (vector-ref v 1))\n", "expected_output": "7\n", "covers": ["P"]},
+        {"name": "record_hash_ops", "input": "scheme program.scm\n(hash-ref (hash 'x 10 'y 20) 'y)\n", "expected_output": "20\n", "covers": ["Q"]},
         {"name": "multi_layer_eval", "input": "scheme eval.scm\nscheme generated_eval.scm\n(+ 10 20)\n", "expected_output": "30\n", "covers": ["G", "H", "I"]},
     ]
     if spec.variants.get("arith") == "modulo":
@@ -216,12 +227,9 @@ def build_tests(spec: TaskSpec) -> list[dict]:
     selected = (required + fallback)[:5]
     if len(selected) < 3:
         selected = (required + fallback)[:3]
-    out = []
     for t in selected:
-        row = dict(t)
-        row["required_for_task"] = any(c in types for c in row["covers"])
-        out.append(row)
-    return out
+        t["required_for_task"] = any(c in types for c in t["covers"])
+    return selected
 
 
 def build_task_specs(count: int, seed: int) -> list[TaskSpec]:
@@ -235,7 +243,7 @@ def build_task_specs(count: int, seed: int) -> list[TaskSpec]:
         if difficulty in (1, 8) and not ({"A", "I"} & set(task_types)):
             task_types[0] = "A"
             task_types = sorted(set(task_types))
-        specs.append(TaskSpec(i, difficulty, task_types, choose_variants(task_types, rng, i)))
+        specs.append(TaskSpec(i, difficulty, task_types, choose_variants(task_types, i)))
     return specs
 
 

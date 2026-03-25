@@ -17,7 +17,9 @@
     "lazy_eval": false,
     "io_basic": true,
     "meta_program": false,
-    "self_host_focus": false,
+    "loop_syntax": false,
+    "vector_ds": false,
+    "record_ds": false,
     "arith_modulo": false
   },
   "deterministic": true,

@@ -2,41 +2,43 @@
   "task_id": "task_0011",
   "difficulty": "L3",
   "task_types": [
-    "E",
-    "N"
+    "C",
+    "Q"
   ],
   "variants": {
     "arith": "basic"
   },
   "task_type_descriptions": {
-    "E": "闭包与高阶函数",
-    "N": "元程序任务（程序生成与apply/eval组合）"
+    "C": "函数定义与调用",
+    "Q": "结构体/记录数据结构（hash作为record）"
   },
   "feature_flags": {
     "symbolic_list": false,
     "lazy_eval": false,
     "io_basic": false,
-    "meta_program": true,
-    "self_host_focus": false,
+    "meta_program": false,
+    "loop_syntax": false,
+    "vector_ds": false,
+    "record_ds": true,
     "arith_modulo": false
   },
   "deterministic": true,
   "test_cases": [
     {
-      "name": "closure_high_order",
-      "input": "scheme program.scm\n(begin (define make-adder (lambda (x) (lambda (y) (+ x y)))) ((make-adder 10) 5))\n",
-      "expected_output": "15\n",
+      "name": "function_call",
+      "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
+      "expected_output": "10\n",
       "covers": [
-        "E"
+        "C"
       ],
       "required_for_task": true
     },
     {
-      "name": "meta_program",
-      "input": "scheme program.scm\n(meta-eval '(+ 8 9))\n",
-      "expected_output": "17\n",
+      "name": "record_hash_ops",
+      "input": "scheme program.scm\n(hash-ref (hash 'x 10 'y 20) 'y)\n",
+      "expected_output": "20\n",
       "covers": [
-        "N"
+        "Q"
       ],
       "required_for_task": true
     },
@@ -59,11 +61,12 @@
       "required_for_task": false
     },
     {
-      "name": "function_call",
-      "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
-      "expected_output": "10\n",
+      "name": "recursive_factorial",
+      "input": "scheme program.scm\n(begin (define fact (lambda (n) (if (= n 0) 1 (* n (fact (- n 1)))))) (fact 5))\n",
+      "expected_output": "120\n",
       "covers": [
-        "C"
+        "D",
+        "F"
       ],
       "required_for_task": false
     }

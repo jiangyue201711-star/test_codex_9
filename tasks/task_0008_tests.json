@@ -3,7 +3,7 @@
   "difficulty": "L8",
   "task_types": [
     "A",
-    "E",
+    "M",
     "N"
   ],
   "variants": {
@@ -11,15 +11,17 @@
   },
   "task_type_descriptions": {
     "A": "基础算术 (+, -, *, /)",
-    "E": "闭包与高阶函数",
+    "M": "标准输入输出任务（read/read-line/display/write）",
     "N": "元程序任务（程序生成与apply/eval组合）"
   },
   "feature_flags": {
     "symbolic_list": false,
     "lazy_eval": false,
-    "io_basic": false,
+    "io_basic": true,
     "meta_program": true,
-    "self_host_focus": false,
+    "loop_syntax": false,
+    "vector_ds": false,
+    "record_ds": false,
     "arith_modulo": true
   },
   "deterministic": true,
@@ -34,11 +36,11 @@
       "required_for_task": true
     },
     {
-      "name": "closure_high_order",
-      "input": "scheme program.scm\n(begin (define make-adder (lambda (x) (lambda (y) (+ x y)))) ((make-adder 10) 5))\n",
-      "expected_output": "15\n",
+      "name": "io_read_line",
+      "input": "scheme program.scm\n(begin (display (read-line)) (newline) 0)\nhello-mesis\n",
+      "expected_output": "hello-mesis\n0\n",
       "covers": [
-        "E"
+        "M"
       ],
       "required_for_task": true
     },
