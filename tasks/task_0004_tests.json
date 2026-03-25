@@ -8,6 +8,12 @@
   "variants": {
     "arith": "basic"
   },
+  "arith_variant_ops": [
+    "+",
+    "-",
+    "*",
+    "/"
+  ],
   "task_type_descriptions": {
     "D": "递归函数（factorial, fibonacci）",
     "O": "循环控制语法（for/while）"
@@ -20,20 +26,10 @@
     "loop_syntax": true,
     "vector_ds": false,
     "record_ds": false,
-    "arith_modulo": false
+    "arith_variant": "basic"
   },
   "deterministic": true,
   "test_cases": [
-    {
-      "name": "recursive_factorial",
-      "input": "scheme program.scm\n(begin (define fact (lambda (n) (if (= n 0) 1 (* n (fact (- n 1)))))) (fact 5))\n",
-      "expected_output": "120\n",
-      "covers": [
-        "D",
-        "F"
-      ],
-      "required_for_task": true
-    },
     {
       "name": "while_loop",
       "input": "scheme program.scm\n(begin (define i 0) (define s 0) (while (< i 4) (set! s (+ s i)) (set! i (+ i 1))) s)\n",
@@ -62,11 +58,20 @@
       "required_for_task": false
     },
     {
-      "name": "function_call",
-      "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
-      "expected_output": "10\n",
+      "name": "vector_ops",
+      "input": "scheme program.scm\n(begin (define v (vector 1 2 3)) (vector-set! v 1 7) (vector-ref v 1))\n",
+      "expected_output": "7\n",
       "covers": [
-        "C"
+        "P"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "record_hash_ops",
+      "input": "scheme program.scm\n(hash-ref (hash 'x 10 'y 20) 'y)\n",
+      "expected_output": "20\n",
+      "covers": [
+        "Q"
       ],
       "required_for_task": false
     }

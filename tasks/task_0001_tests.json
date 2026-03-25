@@ -6,8 +6,15 @@
     "M"
   ],
   "variants": {
-    "arith": "basic"
+    "arith": "modulo"
   },
+  "arith_variant_ops": [
+    "+",
+    "-",
+    "*",
+    "/",
+    "modulo"
+  ],
   "task_type_descriptions": {
     "A": "基础算术 (+, -, *, /)",
     "M": "标准输入输出任务（read/read-line/display/write）"
@@ -20,7 +27,7 @@
     "loop_syntax": false,
     "vector_ds": false,
     "record_ds": false,
-    "arith_modulo": false
+    "arith_variant": "modulo"
   },
   "deterministic": true,
   "test_cases": [
@@ -34,11 +41,12 @@
       "required_for_task": true
     },
     {
-      "name": "io_read_line",
-      "input": "scheme program.scm\n(begin (display (read-line)) (newline) 0)\nhello-mesis\n",
-      "expected_output": "hello-mesis\n0\n",
+      "name": "arithmetic_modulo",
+      "input": "scheme program.scm\n(modulo 17 5)\n",
+      "expected_output": "2\n",
       "covers": [
-        "M"
+        "A",
+        "I"
       ],
       "required_for_task": true
     },
@@ -52,21 +60,20 @@
       "required_for_task": false
     },
     {
-      "name": "function_call",
-      "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
-      "expected_output": "10\n",
+      "name": "while_loop",
+      "input": "scheme program.scm\n(begin (define i 0) (define s 0) (while (< i 4) (set! s (+ s i)) (set! i (+ i 1))) s)\n",
+      "expected_output": "6\n",
       "covers": [
-        "C"
+        "O"
       ],
       "required_for_task": false
     },
     {
-      "name": "recursive_factorial",
-      "input": "scheme program.scm\n(begin (define fact (lambda (n) (if (= n 0) 1 (* n (fact (- n 1)))))) (fact 5))\n",
-      "expected_output": "120\n",
+      "name": "vector_ops",
+      "input": "scheme program.scm\n(begin (define v (vector 1 2 3)) (vector-set! v 1 7) (vector-ref v 1))\n",
+      "expected_output": "7\n",
       "covers": [
-        "D",
-        "F"
+        "P"
       ],
       "required_for_task": false
     }

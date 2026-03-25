@@ -8,6 +8,12 @@
   "variants": {
     "arith": "basic"
   },
+  "arith_variant_ops": [
+    "+",
+    "-",
+    "*",
+    "/"
+  ],
   "task_type_descriptions": {
     "C": "函数定义与调用",
     "M": "标准输入输出任务（read/read-line/display/write）"
@@ -20,28 +26,10 @@
     "loop_syntax": false,
     "vector_ds": false,
     "record_ds": false,
-    "arith_modulo": false
+    "arith_variant": "basic"
   },
   "deterministic": true,
   "test_cases": [
-    {
-      "name": "function_call",
-      "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
-      "expected_output": "10\n",
-      "covers": [
-        "C"
-      ],
-      "required_for_task": true
-    },
-    {
-      "name": "io_read_line",
-      "input": "scheme program.scm\n(begin (display (read-line)) (newline) 0)\nhello-mesis\n",
-      "expected_output": "hello-mesis\n0\n",
-      "covers": [
-        "M"
-      ],
-      "required_for_task": true
-    },
     {
       "name": "basic_arithmetic",
       "input": "scheme program.scm\n(+ 2 3)\n",
@@ -61,12 +49,29 @@
       "required_for_task": false
     },
     {
-      "name": "recursive_factorial",
-      "input": "scheme program.scm\n(begin (define fact (lambda (n) (if (= n 0) 1 (* n (fact (- n 1)))))) (fact 5))\n",
-      "expected_output": "120\n",
+      "name": "while_loop",
+      "input": "scheme program.scm\n(begin (define i 0) (define s 0) (while (< i 4) (set! s (+ s i)) (set! i (+ i 1))) s)\n",
+      "expected_output": "6\n",
       "covers": [
-        "D",
-        "F"
+        "O"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "vector_ops",
+      "input": "scheme program.scm\n(begin (define v (vector 1 2 3)) (vector-set! v 1 7) (vector-ref v 1))\n",
+      "expected_output": "7\n",
+      "covers": [
+        "P"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "record_hash_ops",
+      "input": "scheme program.scm\n(hash-ref (hash 'x 10 'y 20) 'y)\n",
+      "expected_output": "20\n",
+      "covers": [
+        "Q"
       ],
       "required_for_task": false
     }

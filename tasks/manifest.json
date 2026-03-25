@@ -11,8 +11,15 @@
         "M"
       ],
       "variants": {
-        "arith": "basic"
+        "arith": "modulo"
       },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/",
+        "modulo"
+      ],
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
@@ -21,7 +28,7 @@
         "loop_syntax": false,
         "vector_ds": false,
         "record_ds": false,
-        "arith_modulo": false
+        "arith_variant": "modulo"
       },
       "eval": "tasks/task_0001_eval.scm",
       "tests": "tasks/task_0001_tests.json"
@@ -36,6 +43,12 @@
       "variants": {
         "arith": "basic"
       },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
@@ -44,7 +57,7 @@
         "loop_syntax": false,
         "vector_ds": true,
         "record_ds": false,
-        "arith_modulo": false
+        "arith_variant": "basic"
       },
       "eval": "tasks/task_0002_eval.scm",
       "tests": "tasks/task_0002_tests.json"
@@ -59,6 +72,12 @@
       "variants": {
         "arith": "basic"
       },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
@@ -67,7 +86,7 @@
         "loop_syntax": false,
         "vector_ds": false,
         "record_ds": true,
-        "arith_modulo": false
+        "arith_variant": "basic"
       },
       "eval": "tasks/task_0003_eval.scm",
       "tests": "tasks/task_0003_tests.json"
@@ -82,6 +101,12 @@
       "variants": {
         "arith": "basic"
       },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
@@ -90,7 +115,7 @@
         "loop_syntax": true,
         "vector_ds": false,
         "record_ds": false,
-        "arith_modulo": false
+        "arith_variant": "basic"
       },
       "eval": "tasks/task_0004_eval.scm",
       "tests": "tasks/task_0004_tests.json"
@@ -105,6 +130,12 @@
       "variants": {
         "arith": "basic"
       },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
@@ -113,7 +144,7 @@
         "loop_syntax": false,
         "vector_ds": true,
         "record_ds": false,
-        "arith_modulo": false
+        "arith_variant": "basic"
       },
       "eval": "tasks/task_0005_eval.scm",
       "tests": "tasks/task_0005_tests.json"
@@ -128,6 +159,12 @@
       "variants": {
         "arith": "basic"
       },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": true,
@@ -136,7 +173,7 @@
         "loop_syntax": false,
         "vector_ds": false,
         "record_ds": true,
-        "arith_modulo": false
+        "arith_variant": "basic"
       },
       "eval": "tasks/task_0006_eval.scm",
       "tests": "tasks/task_0006_tests.json"
@@ -150,8 +187,15 @@
         "N"
       ],
       "variants": {
-        "arith": "basic"
+        "arith": "modulo"
       },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/",
+        "modulo"
+      ],
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
@@ -160,7 +204,7 @@
         "loop_syntax": false,
         "vector_ds": false,
         "record_ds": false,
-        "arith_modulo": false
+        "arith_variant": "modulo"
       },
       "eval": "tasks/task_0007_eval.scm",
       "tests": "tasks/task_0007_tests.json"
@@ -174,8 +218,15 @@
         "N"
       ],
       "variants": {
-        "arith": "modulo"
+        "arith": "bitwise"
       },
+      "arith_variant_ops": [
+        "&",
+        "|",
+        "^",
+        "<<",
+        ">>"
+      ],
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
@@ -184,7 +235,7 @@
         "loop_syntax": false,
         "vector_ds": false,
         "record_ds": false,
-        "arith_modulo": true
+        "arith_variant": "bitwise"
       },
       "eval": "tasks/task_0008_eval.scm",
       "tests": "tasks/task_0008_tests.json"
@@ -197,8 +248,15 @@
         "M"
       ],
       "variants": {
-        "arith": "basic"
+        "arith": "comparison"
       },
+      "arith_variant_ops": [
+        "=",
+        "<",
+        ">",
+        "<=",
+        ">="
+      ],
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
@@ -207,7 +265,7 @@
         "loop_syntax": false,
         "vector_ds": false,
         "record_ds": false,
-        "arith_modulo": false
+        "arith_variant": "comparison"
       },
       "eval": "tasks/task_0009_eval.scm",
       "tests": "tasks/task_0009_tests.json"
@@ -222,6 +280,12 @@
       "variants": {
         "arith": "basic"
       },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
@@ -230,7 +294,7 @@
         "loop_syntax": false,
         "vector_ds": false,
         "record_ds": false,
-        "arith_modulo": false
+        "arith_variant": "basic"
       },
       "eval": "tasks/task_0010_eval.scm",
       "tests": "tasks/task_0010_tests.json"
@@ -245,6 +309,12 @@
       "variants": {
         "arith": "basic"
       },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
@@ -253,7 +323,7 @@
         "loop_syntax": false,
         "vector_ds": false,
         "record_ds": true,
-        "arith_modulo": false
+        "arith_variant": "basic"
       },
       "eval": "tasks/task_0011_eval.scm",
       "tests": "tasks/task_0011_tests.json"
@@ -268,6 +338,12 @@
       "variants": {
         "arith": "basic"
       },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
       "feature_flags": {
         "symbolic_list": false,
         "lazy_eval": false,
@@ -276,7 +352,7 @@
         "loop_syntax": false,
         "vector_ds": false,
         "record_ds": false,
-        "arith_modulo": false
+        "arith_variant": "basic"
       },
       "eval": "tasks/task_0012_eval.scm",
       "tests": "tasks/task_0012_tests.json"

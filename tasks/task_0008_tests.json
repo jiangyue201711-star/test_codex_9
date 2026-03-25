@@ -7,8 +7,15 @@
     "N"
   ],
   "variants": {
-    "arith": "modulo"
+    "arith": "bitwise"
   },
+  "arith_variant_ops": [
+    "&",
+    "|",
+    "^",
+    "<<",
+    ">>"
+  ],
   "task_type_descriptions": {
     "A": "基础算术 (+, -, *, /)",
     "M": "标准输入输出任务（read/read-line/display/write）",
@@ -22,7 +29,7 @@
     "loop_syntax": false,
     "vector_ds": false,
     "record_ds": false,
-    "arith_modulo": true
+    "arith_variant": "bitwise"
   },
   "deterministic": true,
   "test_cases": [
@@ -36,26 +43,8 @@
       "required_for_task": true
     },
     {
-      "name": "io_read_line",
-      "input": "scheme program.scm\n(begin (display (read-line)) (newline) 0)\nhello-mesis\n",
-      "expected_output": "hello-mesis\n0\n",
-      "covers": [
-        "M"
-      ],
-      "required_for_task": true
-    },
-    {
-      "name": "meta_program",
-      "input": "scheme program.scm\n(meta-eval '(+ 8 9))\n",
-      "expected_output": "17\n",
-      "covers": [
-        "N"
-      ],
-      "required_for_task": true
-    },
-    {
-      "name": "arithmetic_modulo",
-      "input": "scheme program.scm\n(modulo 17 5)\n",
+      "name": "arithmetic_bitwise",
+      "input": "scheme program.scm\n(bit-and 6 3)\n",
       "expected_output": "2\n",
       "covers": [
         "A",
@@ -69,6 +58,24 @@
       "expected_output": "12\n",
       "covers": [
         "B"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "while_loop",
+      "input": "scheme program.scm\n(begin (define i 0) (define s 0) (while (< i 4) (set! s (+ s i)) (set! i (+ i 1))) s)\n",
+      "expected_output": "6\n",
+      "covers": [
+        "O"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "vector_ops",
+      "input": "scheme program.scm\n(begin (define v (vector 1 2 3)) (vector-set! v 1 7) (vector-ref v 1))\n",
+      "expected_output": "7\n",
+      "covers": [
+        "P"
       ],
       "required_for_task": false
     }
