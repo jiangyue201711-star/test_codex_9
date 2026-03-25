@@ -21,17 +21,20 @@ TASK_TYPES = {
     "G": "多层 eval 调用自身",
     "H": "自宿主任务（eval.scm 调用自身生成程序）",
     "I": "组合任务（算术 + 函数 + eval 嵌套）",
+    "J": "符号与列表程序（quote/list/map/filter/fold）",
+    "K": "局部作用域与绑定策略（let/let*/letrec）",
+    "L": "惰性求值与延迟执行（delay/force/thunk）",
 }
 
 DIFFICULTY_LEVELS = {
     1: ["A", "B"],
-    2: ["B", "C"],
-    3: ["C", "E"],
-    4: ["D", "F"],
-    5: ["G", "I"],
-    6: ["H", "G"],
-    7: ["G", "H", "I"],
-    8: ["A", "C", "D", "E", "F", "G", "H", "I"],
+    2: ["B", "C", "J"],
+    3: ["C", "E", "J"],
+    4: ["D", "F", "K"],
+    5: ["G", "I", "K"],
+    6: ["H", "G", "L"],
+    7: ["G", "H", "I", "K", "L"],
+    8: ["A", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"],
 }
 
 
@@ -45,14 +48,17 @@ class TaskSpec:
 def feature_flags(spec: TaskSpec) -> dict[str, bool]:
     t = set(spec.task_types)
     return {
-        "arith": "A" in t or "I" in t,
-        "vars": "B" in t or "I" in t or "D" in t,
-        "lambda": "C" in t or "E" in t or "I" in t or "D" in t,
-        "recursion": "D" in t,
-        "higher_order": "E" in t or "I" in t,
-        "condition": "F" in t or "D" in t or "I" in t,
-        "multi_layer": "G" in t or "H" in t or "I" in t,
+        "arith": bool({"A", "I"} & t),
+        "vars": bool({"B", "I", "D", "K"} & t),
+        "lambda": bool({"C", "E", "I", "D", "K", "L"} & t),
+        "recursion": bool({"D", "K"} & t),
+        "higher_order": bool({"E", "I", "J"} & t),
+        "condition": bool({"F", "D", "I", "K"} & t),
+        "multi_layer": bool({"G", "H", "I"} & t),
         "self_host": "H" in t,
+        "symbolic_list": "J" in t,
+        "local_scope": "K" in t,
+        "lazy_eval": "L" in t,
     }
 
 
@@ -76,10 +82,16 @@ def primitive_block(flags: dict[str, bool]) -> str:
             "(cons '= =)", "(cons '< <)", "(cons '<= <=)", "(cons '> >)", "(cons '>= >=)",
         ])
     if flags["higher_order"]:
+        core.extend(["(cons 'map map)", "(cons 'apply apply)"])
+    if flags["symbolic_list"]:
         core.extend([
-            "(cons 'map map)",
-            "(cons 'apply apply)",
+            "(cons 'append append)",
+            "(cons 'length length)",
+            "(cons 'reverse reverse)",
+            "(cons 'memq memq)",
         ])
+    if flags["lazy_eval"]:
+        core.append("(cons 'force force)")
     return "\n   ".join(core)
 
 
@@ -92,6 +104,7 @@ def eval_special_forms(flags: dict[str, bool]) -> str:
         "[(not (pair? exp)) exp]",
         "[(eq? (car exp) 'quote) (cadr exp)]",
     ]
+
     if flags["condition"]:
         forms.extend([
             "[(eq? (car exp) 'if)\n     (if (m-eval (cadr exp) env)\n         (m-eval (caddr exp) env)\n         (m-eval (cadddr exp) env))]",
@@ -109,10 +122,19 @@ def eval_special_forms(flags: dict[str, bool]) -> str:
     if flags["lambda"]:
         forms.append("[(eq? (car exp) 'lambda) (make-closure (cadr exp) (cddr exp) env)]")
 
+    if flags["local_scope"]:
+        forms.extend([
+            "[(eq? (car exp) 'let)\n     (let* ([bindings (cadr exp)]\n            [names (map car bindings)]\n            [vals (map (lambda (b) (m-eval (cadr b) env)) bindings)]\n            [n-env (extend-env names vals env)])\n       (eval-sequence (cddr exp) n-env))]",
+            "[(eq? (car exp) 'let*)\n     (let loop ([bs (cadr exp)] [e env])\n       (if (null? bs)\n           (eval-sequence (cddr exp) e)\n           (let* ([b (car bs)]\n                  [n (car b)]\n                  [v (m-eval (cadr b) e)])\n             (loop (cdr bs) (extend-env (list n) (list v) e)))))]",
+        ])
+
     if flags["recursion"]:
         forms.append(
             "[(eq? (car exp) 'letrec)\n     (let* ([binding (car (cadr exp))]\n            [name (car binding)]\n            [rhs (cadr binding)])\n       (set! global-env (cons (cons name 'pending) global-env))\n       (set-var global-env name (m-eval rhs global-env))\n       (eval-sequence (cddr exp) global-env))]"
         )
+
+    if flags["lazy_eval"]:
+        forms.append("[(eq? (car exp) 'delay) (delay (m-eval (cadr exp) env))]")
 
     forms.append(
         "[else\n     (let ([proc (m-eval (car exp) env)]\n           [args (map (lambda (e) (m-eval e env)) (cdr exp))])\n       (apply-proc proc args))]"
@@ -153,8 +175,6 @@ def layer_runner(flags: dict[str, bool]) -> str:
 def evaluator_source(spec: TaskSpec) -> str:
     flags = feature_flags(spec)
     enabled = " ".join(spec.task_types)
-    forms = eval_special_forms(flags)
-    resolver = layer_runner(flags)
 
     cond_helper = ""
     if flags["condition"]:
@@ -192,21 +212,6 @@ def evaluator_source(spec: TaskSpec) -> str:
         """
     ).strip() if flags["lambda"] else ""
 
-    apply_impl = dedent(
-        """
-        (define (apply-proc proc args)
-          (cond
-            [(and (pair? proc) (eq? (car proc) 'closure))
-             (let* ([params (cadr proc)]
-                    [body (caddr proc)]
-                    [saved-env (cadddr proc)]
-                    [next-env (extend-env params args saved-env)])
-               (eval-sequence body next-env))]
-            [(procedure? proc) (apply proc args)]
-            [else (error "not a procedure" proc)]))
-        """
-    ).strip()
-
     return dedent(
         f"""
         #lang racket
@@ -234,7 +239,16 @@ def evaluator_source(spec: TaskSpec) -> str:
 
         {lambda_impl}
 
-        {apply_impl}
+        (define (apply-proc proc args)
+          (cond
+            [(and (pair? proc) (eq? (car proc) 'closure))
+             (let* ([params (cadr proc)]
+                    [body (caddr proc)]
+                    [saved-env (cadddr proc)]
+                    [next-env (extend-env params args saved-env)])
+               (eval-sequence body next-env))]
+            [(procedure? proc) (apply proc args)]
+            [else (error "not a procedure" proc)]))
 
         (define (eval-sequence exps env)
           (cond
@@ -248,9 +262,9 @@ def evaluator_source(spec: TaskSpec) -> str:
 
         (define (m-eval exp env)
           (cond
-            {forms}))
+            {eval_special_forms(flags)}))
 
-        {resolver}
+        {layer_runner(flags)}
 
         (define (main)
           (define all-lines
@@ -276,57 +290,24 @@ def evaluator_source(spec: TaskSpec) -> str:
 
 def base_test_pool() -> list[dict]:
     return [
-        {
-            "name": "basic_arithmetic",
-            "input": "scheme program.scm\n(+ 2 3)\n",
-            "expected_output": "5\n",
-            "covers": ["A"],
-        },
-        {
-            "name": "variable_access",
-            "input": "scheme program.scm\n(begin (define x 7) (+ x 5))\n",
-            "expected_output": "12\n",
-            "covers": ["B"],
-        },
-        {
-            "name": "function_call",
-            "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
-            "expected_output": "10\n",
-            "covers": ["C"],
-        },
-        {
-            "name": "recursive_factorial",
-            "input": "scheme program.scm\n(begin (define fact (lambda (n) (if (= n 0) 1 (* n (fact (- n 1)))))) (fact 5))\n",
-            "expected_output": "120\n",
-            "covers": ["D", "F"],
-        },
-        {
-            "name": "closure_high_order",
-            "input": "scheme program.scm\n(begin (define make-adder (lambda (x) (lambda (y) (+ x y)))) ((make-adder 10) 5))\n",
-            "expected_output": "15\n",
-            "covers": ["E"],
-        },
-        {
-            "name": "multi_layer_eval",
-            "input": "scheme eval.scm\nscheme generated_eval.scm\n(+ 10 20)\n",
-            "expected_output": "30\n",
-            "covers": ["G", "H", "I"],
-        },
+        {"name": "basic_arithmetic", "input": "scheme program.scm\n(+ 2 3)\n", "expected_output": "5\n", "covers": ["A"]},
+        {"name": "variable_access", "input": "scheme program.scm\n(begin (define x 7) (+ x 5))\n", "expected_output": "12\n", "covers": ["B"]},
+        {"name": "function_call", "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n", "expected_output": "10\n", "covers": ["C"]},
+        {"name": "recursive_factorial", "input": "scheme program.scm\n(begin (define fact (lambda (n) (if (= n 0) 1 (* n (fact (- n 1)))))) (fact 5))\n", "expected_output": "120\n", "covers": ["D", "F"]},
+        {"name": "closure_high_order", "input": "scheme program.scm\n(begin (define make-adder (lambda (x) (lambda (y) (+ x y)))) ((make-adder 10) 5))\n", "expected_output": "15\n", "covers": ["E"]},
+        {"name": "symbolic_list_ops", "input": "scheme program.scm\n(begin (define xs '(a b c)) (length xs))\n", "expected_output": "3\n", "covers": ["J"]},
+        {"name": "local_scope_let_star", "input": "scheme program.scm\n(let* ((x 2) (y (+ x 3))) (* y 2))\n", "expected_output": "10\n", "covers": ["K"]},
+        {"name": "lazy_delay_force", "input": "scheme program.scm\n(force (delay (+ 40 2)))\n", "expected_output": "42\n", "covers": ["L"]},
+        {"name": "multi_layer_eval", "input": "scheme eval.scm\nscheme generated_eval.scm\n(+ 10 20)\n", "expected_output": "30\n", "covers": ["G", "H", "I"]},
     ]
 
 
 def build_tests(spec: TaskSpec) -> list[dict]:
     pool = base_test_pool()
     types = set(spec.task_types)
-
-    required = [
-        t for t in pool
-        if any(c in types for c in t["covers"])
-    ]
+    required = [t for t in pool if any(c in types for c in t["covers"])]
     fallback = [t for t in pool if t not in required]
-
-    selected = required + fallback
-    selected = selected[:5]
+    selected = (required + fallback)[:5]
     if len(selected) < 3:
         selected = (required + fallback)[:3]
 
@@ -344,7 +325,6 @@ def build_task_specs(count: int, seed: int) -> list[TaskSpec]:
     for i in range(1, count + 1):
         difficulty = ((i - 1) % 8) + 1
         pool = DIFFICULTY_LEVELS[difficulty]
-        # At high difficulty allow richer组合
         k = 3 if difficulty >= 7 and len(pool) >= 3 else min(2, len(pool))
         task_types = sorted(rng.sample(pool, k=k))
         specs.append(TaskSpec(task_id=i, difficulty=difficulty, task_types=task_types))
@@ -355,12 +335,7 @@ def generate(output_dir: Path, count: int, seed: int) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     specs = build_task_specs(count, seed)
 
-    manifest = {
-        "generator": "MESIS-Bench eval.scm batch generator",
-        "seed": seed,
-        "count": count,
-        "tasks": [],
-    }
+    manifest = {"generator": "MESIS-Bench eval.scm batch generator", "seed": seed, "count": count, "tasks": []}
 
     for spec in specs:
         stem = f"task_{spec.task_id:04d}"
@@ -378,10 +353,7 @@ def generate(output_dir: Path, count: int, seed: int) -> None:
             "deterministic": True,
             "test_cases": build_tests(spec),
         }
-        tests_path.write_text(
-            json.dumps(tests_payload, ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8",
-        )
+        tests_path.write_text(json.dumps(tests_payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
         manifest["tasks"].append(
             {
@@ -394,9 +366,7 @@ def generate(output_dir: Path, count: int, seed: int) -> None:
             }
         )
 
-    (output_dir / "manifest.json").write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
+    (output_dir / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

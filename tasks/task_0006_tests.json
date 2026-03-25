@@ -3,24 +3,36 @@
   "difficulty": "L6",
   "task_types": [
     "G",
-    "H"
+    "L"
   ],
   "task_type_descriptions": {
     "G": "多层 eval 调用自身",
-    "H": "自宿主任务（eval.scm 调用自身生成程序）"
+    "L": "惰性求值与延迟执行（delay/force/thunk）"
   },
   "feature_flags": {
     "arith": false,
     "vars": false,
-    "lambda": false,
+    "lambda": true,
     "recursion": false,
     "higher_order": false,
     "condition": false,
     "multi_layer": true,
-    "self_host": true
+    "self_host": false,
+    "symbolic_list": false,
+    "local_scope": false,
+    "lazy_eval": true
   },
   "deterministic": true,
   "test_cases": [
+    {
+      "name": "lazy_delay_force",
+      "input": "scheme program.scm\n(force (delay (+ 40 2)))\n",
+      "expected_output": "42\n",
+      "covers": [
+        "L"
+      ],
+      "required_for_task": true
+    },
     {
       "name": "multi_layer_eval",
       "input": "scheme eval.scm\nscheme generated_eval.scm\n(+ 10 20)\n",
@@ -56,16 +68,6 @@
       "expected_output": "10\n",
       "covers": [
         "C"
-      ],
-      "required_for_task": false
-    },
-    {
-      "name": "recursive_factorial",
-      "input": "scheme program.scm\n(begin (define fact (lambda (n) (if (= n 0) 1 (* n (fact (- n 1)))))) (fact 5))\n",
-      "expected_output": "120\n",
-      "covers": [
-        "D",
-        "F"
       ],
       "required_for_task": false
     }

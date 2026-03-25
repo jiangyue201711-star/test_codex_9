@@ -3,11 +3,11 @@
   "difficulty": "L3",
   "task_types": [
     "C",
-    "E"
+    "J"
   ],
   "task_type_descriptions": {
     "C": "函数定义与调用",
-    "E": "闭包与高阶函数"
+    "J": "符号与列表程序（quote/list/map/filter/fold）"
   },
   "feature_flags": {
     "arith": false,
@@ -17,7 +17,10 @@
     "higher_order": true,
     "condition": false,
     "multi_layer": false,
-    "self_host": false
+    "self_host": false,
+    "symbolic_list": true,
+    "local_scope": false,
+    "lazy_eval": false
   },
   "deterministic": true,
   "test_cases": [
@@ -31,11 +34,11 @@
       "required_for_task": true
     },
     {
-      "name": "closure_high_order",
-      "input": "scheme program.scm\n(begin (define make-adder (lambda (x) (lambda (y) (+ x y)))) ((make-adder 10) 5))\n",
-      "expected_output": "15\n",
+      "name": "symbolic_list_ops",
+      "input": "scheme program.scm\n(begin (define xs '(a b c)) (length xs))\n",
+      "expected_output": "3\n",
       "covers": [
-        "E"
+        "J"
       ],
       "required_for_task": true
     },

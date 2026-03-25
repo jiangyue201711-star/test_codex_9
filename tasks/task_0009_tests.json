@@ -17,7 +17,10 @@
     "higher_order": false,
     "condition": false,
     "multi_layer": false,
-    "self_host": false
+    "self_host": false,
+    "symbolic_list": false,
+    "local_scope": false,
+    "lazy_eval": false
   },
   "deterministic": true,
   "test_cases": [

@@ -18,7 +18,10 @@
         "higher_order": false,
         "condition": false,
         "multi_layer": false,
-        "self_host": false
+        "self_host": false,
+        "symbolic_list": false,
+        "local_scope": false,
+        "lazy_eval": false
       },
       "eval": "tasks/task_0001_eval.scm",
       "tests": "tasks/task_0001_tests.json"
@@ -28,17 +31,20 @@
       "difficulty": "L2",
       "task_types": [
         "B",
-        "C"
+        "J"
       ],
       "feature_flags": {
         "arith": false,
         "vars": true,
-        "lambda": true,
+        "lambda": false,
         "recursion": false,
-        "higher_order": false,
+        "higher_order": true,
         "condition": false,
         "multi_layer": false,
-        "self_host": false
+        "self_host": false,
+        "symbolic_list": true,
+        "local_scope": false,
+        "lazy_eval": false
       },
       "eval": "tasks/task_0002_eval.scm",
       "tests": "tasks/task_0002_tests.json"
@@ -48,7 +54,7 @@
       "difficulty": "L3",
       "task_types": [
         "C",
-        "E"
+        "J"
       ],
       "feature_flags": {
         "arith": false,
@@ -58,7 +64,10 @@
         "higher_order": true,
         "condition": false,
         "multi_layer": false,
-        "self_host": false
+        "self_host": false,
+        "symbolic_list": true,
+        "local_scope": false,
+        "lazy_eval": false
       },
       "eval": "tasks/task_0003_eval.scm",
       "tests": "tasks/task_0003_tests.json"
@@ -68,7 +77,7 @@
       "difficulty": "L4",
       "task_types": [
         "D",
-        "F"
+        "K"
       ],
       "feature_flags": {
         "arith": false,
@@ -78,7 +87,10 @@
         "higher_order": false,
         "condition": true,
         "multi_layer": false,
-        "self_host": false
+        "self_host": false,
+        "symbolic_list": false,
+        "local_scope": true,
+        "lazy_eval": false
       },
       "eval": "tasks/task_0004_eval.scm",
       "tests": "tasks/task_0004_tests.json"
@@ -88,17 +100,20 @@
       "difficulty": "L5",
       "task_types": [
         "G",
-        "I"
+        "K"
       ],
       "feature_flags": {
-        "arith": true,
+        "arith": false,
         "vars": true,
         "lambda": true,
-        "recursion": false,
-        "higher_order": true,
+        "recursion": true,
+        "higher_order": false,
         "condition": true,
         "multi_layer": true,
-        "self_host": false
+        "self_host": false,
+        "symbolic_list": false,
+        "local_scope": true,
+        "lazy_eval": false
       },
       "eval": "tasks/task_0005_eval.scm",
       "tests": "tasks/task_0005_tests.json"
@@ -108,17 +123,20 @@
       "difficulty": "L6",
       "task_types": [
         "G",
-        "H"
+        "L"
       ],
       "feature_flags": {
         "arith": false,
         "vars": false,
-        "lambda": false,
+        "lambda": true,
         "recursion": false,
         "higher_order": false,
         "condition": false,
         "multi_layer": true,
-        "self_host": true
+        "self_host": false,
+        "symbolic_list": false,
+        "local_scope": false,
+        "lazy_eval": true
       },
       "eval": "tasks/task_0006_eval.scm",
       "tests": "tasks/task_0006_tests.json"
@@ -127,9 +145,9 @@
       "task_id": "task_0007",
       "difficulty": "L7",
       "task_types": [
-        "G",
         "H",
-        "I"
+        "I",
+        "L"
       ],
       "feature_flags": {
         "arith": true,
@@ -139,7 +157,10 @@
         "higher_order": true,
         "condition": true,
         "multi_layer": true,
-        "self_host": true
+        "self_host": true,
+        "symbolic_list": false,
+        "local_scope": false,
+        "lazy_eval": true
       },
       "eval": "tasks/task_0007_eval.scm",
       "tests": "tasks/task_0007_tests.json"
@@ -148,19 +169,22 @@
       "task_id": "task_0008",
       "difficulty": "L8",
       "task_types": [
-        "C",
-        "E",
-        "H"
+        "H",
+        "K",
+        "L"
       ],
       "feature_flags": {
         "arith": false,
-        "vars": false,
+        "vars": true,
         "lambda": true,
-        "recursion": false,
-        "higher_order": true,
-        "condition": false,
+        "recursion": true,
+        "higher_order": false,
+        "condition": true,
         "multi_layer": true,
-        "self_host": true
+        "self_host": true,
+        "symbolic_list": false,
+        "local_scope": true,
+        "lazy_eval": true
       },
       "eval": "tasks/task_0008_eval.scm",
       "tests": "tasks/task_0008_tests.json"
@@ -180,7 +204,10 @@
         "higher_order": false,
         "condition": false,
         "multi_layer": false,
-        "self_host": false
+        "self_host": false,
+        "symbolic_list": false,
+        "local_scope": false,
+        "lazy_eval": false
       },
       "eval": "tasks/task_0009_eval.scm",
       "tests": "tasks/task_0009_tests.json"
@@ -190,17 +217,20 @@
       "difficulty": "L2",
       "task_types": [
         "B",
-        "C"
+        "J"
       ],
       "feature_flags": {
         "arith": false,
         "vars": true,
-        "lambda": true,
+        "lambda": false,
         "recursion": false,
-        "higher_order": false,
+        "higher_order": true,
         "condition": false,
         "multi_layer": false,
-        "self_host": false
+        "self_host": false,
+        "symbolic_list": true,
+        "local_scope": false,
+        "lazy_eval": false
       },
       "eval": "tasks/task_0010_eval.scm",
       "tests": "tasks/task_0010_tests.json"
@@ -209,8 +239,8 @@
       "task_id": "task_0011",
       "difficulty": "L3",
       "task_types": [
-        "C",
-        "E"
+        "E",
+        "J"
       ],
       "feature_flags": {
         "arith": false,
@@ -220,7 +250,10 @@
         "higher_order": true,
         "condition": false,
         "multi_layer": false,
-        "self_host": false
+        "self_host": false,
+        "symbolic_list": true,
+        "local_scope": false,
+        "lazy_eval": false
       },
       "eval": "tasks/task_0011_eval.scm",
       "tests": "tasks/task_0011_tests.json"
@@ -230,7 +263,7 @@
       "difficulty": "L4",
       "task_types": [
         "D",
-        "F"
+        "K"
       ],
       "feature_flags": {
         "arith": false,
@@ -240,7 +273,10 @@
         "higher_order": false,
         "condition": true,
         "multi_layer": false,
-        "self_host": false
+        "self_host": false,
+        "symbolic_list": false,
+        "local_scope": true,
+        "lazy_eval": false
       },
       "eval": "tasks/task_0012_eval.scm",
       "tests": "tasks/task_0012_tests.json"

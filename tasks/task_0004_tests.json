@@ -3,11 +3,11 @@
   "difficulty": "L4",
   "task_types": [
     "D",
-    "F"
+    "K"
   ],
   "task_type_descriptions": {
     "D": "递归函数（factorial, fibonacci）",
-    "F": "条件分支 (if, cond)"
+    "K": "局部作用域与绑定策略（let/let*/letrec）"
   },
   "feature_flags": {
     "arith": false,
@@ -17,7 +17,10 @@
     "higher_order": false,
     "condition": true,
     "multi_layer": false,
-    "self_host": false
+    "self_host": false,
+    "symbolic_list": false,
+    "local_scope": true,
+    "lazy_eval": false
   },
   "deterministic": true,
   "test_cases": [
@@ -28,6 +31,15 @@
       "covers": [
         "D",
         "F"
+      ],
+      "required_for_task": true
+    },
+    {
+      "name": "local_scope_let_star",
+      "input": "scheme program.scm\n(let* ((x 2) (y (+ x 3))) (* y 2))\n",
+      "expected_output": "10\n",
+      "covers": [
+        "K"
       ],
       "required_for_task": true
     },
@@ -55,15 +67,6 @@
       "expected_output": "10\n",
       "covers": [
         "C"
-      ],
-      "required_for_task": false
-    },
-    {
-      "name": "closure_high_order",
-      "input": "scheme program.scm\n(begin (define make-adder (lambda (x) (lambda (y) (+ x y)))) ((make-adder 10) 5))\n",
-      "expected_output": "15\n",
-      "covers": [
-        "E"
       ],
       "required_for_task": false
     }
