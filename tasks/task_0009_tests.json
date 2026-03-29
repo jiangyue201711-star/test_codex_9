@@ -1,0 +1,83 @@
+{
+  "task_id": "task_0009",
+  "difficulty": "L1",
+  "task_types": [
+    "A",
+    "M"
+  ],
+  "variants": {
+    "arith": "comparison"
+  },
+  "arith_variant_ops": [
+    "=",
+    "<",
+    ">",
+    "<=",
+    ">="
+  ],
+  "task_type_descriptions": {
+    "A": "基础算术 (+, -, *, /)",
+    "M": "标准输入输出任务（read/read-line/display/write）"
+  },
+  "feature_flags": {
+    "symbolic_list": false,
+    "lazy_eval": false,
+    "io_basic": true,
+    "meta_program": false,
+    "loop_syntax": false,
+    "vector_ds": false,
+    "record_ds": false,
+    "file_ops": false,
+    "arith_variant": "comparison"
+  },
+  "deterministic": true,
+  "test_cases": [
+    {
+      "name": "function_call",
+      "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
+      "expected_output": "10\n",
+      "covers": [
+        "C",
+        "E"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "basic_arithmetic",
+      "input": "scheme program.scm\n(+ 2 3)\n",
+      "expected_output": "5\n",
+      "covers": [
+        "A"
+      ],
+      "required_for_task": true
+    },
+    {
+      "name": "arithmetic_comparison",
+      "input": "scheme program.scm\n(<= 3 5)\n",
+      "expected_output": "#t\n",
+      "covers": [
+        "A",
+        "I"
+      ],
+      "required_for_task": true
+    },
+    {
+      "name": "variable_access",
+      "input": "scheme program.scm\n(begin (define x 7) (+ x 5))\n",
+      "expected_output": "12\n",
+      "covers": [
+        "B"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "while_loop",
+      "input": "scheme program.scm\n(begin (define i 0) (define s 0) (while (< i 4) (set! s (+ s i)) (set! i (+ i 1))) s)\n",
+      "expected_output": "6\n",
+      "covers": [
+        "O"
+      ],
+      "required_for_task": false
+    }
+  ]
+}

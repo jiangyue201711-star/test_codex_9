@@ -1,0 +1,373 @@
+{
+  "generator": "MESIS-Bench eval.scm batch generator",
+  "seed": 20260325,
+  "count": 12,
+  "tasks": [
+    {
+      "task_id": "task_0001",
+      "difficulty": "L1",
+      "task_types": [
+        "A",
+        "M"
+      ],
+      "variants": {
+        "arith": "modulo"
+      },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/",
+        "modulo"
+      ],
+      "feature_flags": {
+        "symbolic_list": false,
+        "lazy_eval": false,
+        "io_basic": true,
+        "meta_program": false,
+        "loop_syntax": false,
+        "vector_ds": false,
+        "record_ds": false,
+        "file_ops": false,
+        "arith_variant": "modulo"
+      },
+      "eval": "tasks/task_0001_eval.scm",
+      "tests": "tasks/task_0001_tests.json"
+    },
+    {
+      "task_id": "task_0002",
+      "difficulty": "L2",
+      "task_types": [
+        "B",
+        "P"
+      ],
+      "variants": {
+        "arith": "basic"
+      },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
+      "feature_flags": {
+        "symbolic_list": false,
+        "lazy_eval": false,
+        "io_basic": false,
+        "meta_program": false,
+        "loop_syntax": false,
+        "vector_ds": true,
+        "record_ds": false,
+        "file_ops": false,
+        "arith_variant": "basic"
+      },
+      "eval": "tasks/task_0002_eval.scm",
+      "tests": "tasks/task_0002_tests.json"
+    },
+    {
+      "task_id": "task_0003",
+      "difficulty": "L3",
+      "task_types": [
+        "E",
+        "Q"
+      ],
+      "variants": {
+        "arith": "basic"
+      },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
+      "feature_flags": {
+        "symbolic_list": false,
+        "lazy_eval": false,
+        "io_basic": false,
+        "meta_program": false,
+        "loop_syntax": false,
+        "vector_ds": false,
+        "record_ds": true,
+        "file_ops": false,
+        "arith_variant": "basic"
+      },
+      "eval": "tasks/task_0003_eval.scm",
+      "tests": "tasks/task_0003_tests.json"
+    },
+    {
+      "task_id": "task_0004",
+      "difficulty": "L4",
+      "task_types": [
+        "D",
+        "O"
+      ],
+      "variants": {
+        "arith": "basic"
+      },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
+      "feature_flags": {
+        "symbolic_list": false,
+        "lazy_eval": false,
+        "io_basic": false,
+        "meta_program": false,
+        "loop_syntax": true,
+        "vector_ds": false,
+        "record_ds": false,
+        "file_ops": false,
+        "arith_variant": "basic"
+      },
+      "eval": "tasks/task_0004_eval.scm",
+      "tests": "tasks/task_0004_tests.json"
+    },
+    {
+      "task_id": "task_0005",
+      "difficulty": "L5",
+      "task_types": [
+        "G",
+        "P"
+      ],
+      "variants": {
+        "arith": "basic"
+      },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
+      "feature_flags": {
+        "symbolic_list": false,
+        "lazy_eval": false,
+        "io_basic": false,
+        "meta_program": false,
+        "loop_syntax": false,
+        "vector_ds": true,
+        "record_ds": false,
+        "file_ops": false,
+        "arith_variant": "basic"
+      },
+      "eval": "tasks/task_0005_eval.scm",
+      "tests": "tasks/task_0005_tests.json"
+    },
+    {
+      "task_id": "task_0006",
+      "difficulty": "L6",
+      "task_types": [
+        "Q",
+        "R"
+      ],
+      "variants": {
+        "arith": "basic"
+      },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
+      "feature_flags": {
+        "symbolic_list": false,
+        "lazy_eval": false,
+        "io_basic": false,
+        "meta_program": false,
+        "loop_syntax": false,
+        "vector_ds": false,
+        "record_ds": true,
+        "file_ops": true,
+        "arith_variant": "basic"
+      },
+      "eval": "tasks/task_0006_eval.scm",
+      "tests": "tasks/task_0006_tests.json"
+    },
+    {
+      "task_id": "task_0007",
+      "difficulty": "L7",
+      "task_types": [
+        "I",
+        "K",
+        "N"
+      ],
+      "variants": {
+        "arith": "modulo"
+      },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/",
+        "modulo"
+      ],
+      "feature_flags": {
+        "symbolic_list": false,
+        "lazy_eval": false,
+        "io_basic": false,
+        "meta_program": true,
+        "loop_syntax": false,
+        "vector_ds": false,
+        "record_ds": false,
+        "file_ops": false,
+        "arith_variant": "modulo"
+      },
+      "eval": "tasks/task_0007_eval.scm",
+      "tests": "tasks/task_0007_tests.json"
+    },
+    {
+      "task_id": "task_0008",
+      "difficulty": "L8",
+      "task_types": [
+        "A",
+        "N",
+        "O"
+      ],
+      "variants": {
+        "arith": "bitwise"
+      },
+      "arith_variant_ops": [
+        "&",
+        "|",
+        "^",
+        "<<",
+        ">>"
+      ],
+      "feature_flags": {
+        "symbolic_list": false,
+        "lazy_eval": false,
+        "io_basic": false,
+        "meta_program": true,
+        "loop_syntax": true,
+        "vector_ds": false,
+        "record_ds": false,
+        "file_ops": false,
+        "arith_variant": "bitwise"
+      },
+      "eval": "tasks/task_0008_eval.scm",
+      "tests": "tasks/task_0008_tests.json"
+    },
+    {
+      "task_id": "task_0009",
+      "difficulty": "L1",
+      "task_types": [
+        "A",
+        "M"
+      ],
+      "variants": {
+        "arith": "comparison"
+      },
+      "arith_variant_ops": [
+        "=",
+        "<",
+        ">",
+        "<=",
+        ">="
+      ],
+      "feature_flags": {
+        "symbolic_list": false,
+        "lazy_eval": false,
+        "io_basic": true,
+        "meta_program": false,
+        "loop_syntax": false,
+        "vector_ds": false,
+        "record_ds": false,
+        "file_ops": false,
+        "arith_variant": "comparison"
+      },
+      "eval": "tasks/task_0009_eval.scm",
+      "tests": "tasks/task_0009_tests.json"
+    },
+    {
+      "task_id": "task_0010",
+      "difficulty": "L2",
+      "task_types": [
+        "B",
+        "C"
+      ],
+      "variants": {
+        "arith": "basic"
+      },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
+      "feature_flags": {
+        "symbolic_list": false,
+        "lazy_eval": false,
+        "io_basic": false,
+        "meta_program": false,
+        "loop_syntax": false,
+        "vector_ds": false,
+        "record_ds": false,
+        "file_ops": false,
+        "arith_variant": "basic"
+      },
+      "eval": "tasks/task_0010_eval.scm",
+      "tests": "tasks/task_0010_tests.json"
+    },
+    {
+      "task_id": "task_0011",
+      "difficulty": "L3",
+      "task_types": [
+        "E",
+        "N"
+      ],
+      "variants": {
+        "arith": "basic"
+      },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
+      "feature_flags": {
+        "symbolic_list": false,
+        "lazy_eval": false,
+        "io_basic": false,
+        "meta_program": true,
+        "loop_syntax": false,
+        "vector_ds": false,
+        "record_ds": false,
+        "file_ops": false,
+        "arith_variant": "basic"
+      },
+      "eval": "tasks/task_0011_eval.scm",
+      "tests": "tasks/task_0011_tests.json"
+    },
+    {
+      "task_id": "task_0012",
+      "difficulty": "L4",
+      "task_types": [
+        "N",
+        "R"
+      ],
+      "variants": {
+        "arith": "basic"
+      },
+      "arith_variant_ops": [
+        "+",
+        "-",
+        "*",
+        "/"
+      ],
+      "feature_flags": {
+        "symbolic_list": false,
+        "lazy_eval": false,
+        "io_basic": false,
+        "meta_program": true,
+        "loop_syntax": false,
+        "vector_ds": false,
+        "record_ds": false,
+        "file_ops": true,
+        "arith_variant": "basic"
+      },
+      "eval": "tasks/task_0012_eval.scm",
+      "tests": "tasks/task_0012_tests.json"
+    }
+  ]
+}

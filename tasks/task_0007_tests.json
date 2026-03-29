@@ -1,0 +1,87 @@
+{
+  "task_id": "task_0007",
+  "difficulty": "L7",
+  "task_types": [
+    "I",
+    "K",
+    "N"
+  ],
+  "variants": {
+    "arith": "modulo"
+  },
+  "arith_variant_ops": [
+    "+",
+    "-",
+    "*",
+    "/",
+    "modulo"
+  ],
+  "task_type_descriptions": {
+    "I": "组合任务（算术 + 函数 + eval 嵌套）",
+    "K": "局部作用域与绑定策略（let/let*/letrec）",
+    "N": "元程序任务（程序生成与apply/eval组合）"
+  },
+  "feature_flags": {
+    "symbolic_list": false,
+    "lazy_eval": false,
+    "io_basic": false,
+    "meta_program": true,
+    "loop_syntax": false,
+    "vector_ds": false,
+    "record_ds": false,
+    "file_ops": false,
+    "arith_variant": "modulo"
+  },
+  "deterministic": true,
+  "test_cases": [
+    {
+      "name": "function_call",
+      "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
+      "expected_output": "10\n",
+      "covers": [
+        "C",
+        "E"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "multi_layer_eval",
+      "input": "scheme eval.scm\nscheme generated_eval.scm\n(+ 10 20)\n",
+      "expected_output": "30\n",
+      "covers": [
+        "G",
+        "H",
+        "I"
+      ],
+      "required_for_task": true
+    },
+    {
+      "name": "arithmetic_modulo",
+      "input": "scheme program.scm\n(modulo 17 5)\n",
+      "expected_output": "2\n",
+      "covers": [
+        "A",
+        "I"
+      ],
+      "required_for_task": true
+    },
+    {
+      "name": "basic_arithmetic",
+      "input": "scheme program.scm\n(+ 2 3)\n",
+      "expected_output": "5\n",
+      "covers": [
+        "A"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "variable_access",
+      "input": "scheme program.scm\n(begin (define x 7) (+ x 5))\n",
+      "expected_output": "12\n",
+      "covers": [
+        "B"
+      ],
+      "required_for_task": false
+    }
+  ]
+}

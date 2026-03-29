@@ -1,0 +1,81 @@
+{
+  "task_id": "task_0004",
+  "difficulty": "L4",
+  "task_types": [
+    "D",
+    "O"
+  ],
+  "variants": {
+    "arith": "basic"
+  },
+  "arith_variant_ops": [
+    "+",
+    "-",
+    "*",
+    "/"
+  ],
+  "task_type_descriptions": {
+    "D": "递归函数（factorial, fibonacci）",
+    "O": "循环控制语法（for/while）"
+  },
+  "feature_flags": {
+    "symbolic_list": false,
+    "lazy_eval": false,
+    "io_basic": false,
+    "meta_program": false,
+    "loop_syntax": true,
+    "vector_ds": false,
+    "record_ds": false,
+    "file_ops": false,
+    "arith_variant": "basic"
+  },
+  "deterministic": true,
+  "test_cases": [
+    {
+      "name": "function_call",
+      "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
+      "expected_output": "10\n",
+      "covers": [
+        "C",
+        "E"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "while_loop",
+      "input": "scheme program.scm\n(begin (define i 0) (define s 0) (while (< i 4) (set! s (+ s i)) (set! i (+ i 1))) s)\n",
+      "expected_output": "6\n",
+      "covers": [
+        "O"
+      ],
+      "required_for_task": true
+    },
+    {
+      "name": "basic_arithmetic",
+      "input": "scheme program.scm\n(+ 2 3)\n",
+      "expected_output": "5\n",
+      "covers": [
+        "A"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "variable_access",
+      "input": "scheme program.scm\n(begin (define x 7) (+ x 5))\n",
+      "expected_output": "12\n",
+      "covers": [
+        "B"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "vector_ops",
+      "input": "scheme program.scm\n(begin (define v (vector 1 2 3)) (vector-set! v 1 7) (vector-ref v 1))\n",
+      "expected_output": "7\n",
+      "covers": [
+        "P"
+      ],
+      "required_for_task": false
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "task_id": "task_0008",
+  "difficulty": "L8",
+  "task_types": [
+    "A",
+    "N",
+    "O"
+  ],
+  "variants": {
+    "arith": "bitwise"
+  },
+  "arith_variant_ops": [
+    "&",
+    "|",
+    "^",
+    "<<",
+    ">>"
+  ],
+  "task_type_descriptions": {
+    "A": "基础算术 (+, -, *, /)",
+    "N": "元程序任务（程序生成与apply/eval组合）",
+    "O": "循环控制语法（for/while）"
+  },
+  "feature_flags": {
+    "symbolic_list": false,
+    "lazy_eval": false,
+    "io_basic": false,
+    "meta_program": true,
+    "loop_syntax": true,
+    "vector_ds": false,
+    "record_ds": false,
+    "file_ops": false,
+    "arith_variant": "bitwise"
+  },
+  "deterministic": true,
+  "test_cases": [
+    {
+      "name": "function_call",
+      "input": "scheme program.scm\n((lambda (x) (+ x 4)) 6)\n",
+      "expected_output": "10\n",
+      "covers": [
+        "C",
+        "E"
+      ],
+      "required_for_task": false
+    },
+    {
+      "name": "basic_arithmetic",
+      "input": "scheme program.scm\n(+ 2 3)\n",
+      "expected_output": "5\n",
+      "covers": [
+        "A"
+      ],
+      "required_for_task": true
+    },
+    {
+      "name": "while_loop",
+      "input": "scheme program.scm\n(begin (define i 0) (define s 0) (while (< i 4) (set! s (+ s i)) (set! i (+ i 1))) s)\n",
+      "expected_output": "6\n",
+      "covers": [
+        "O"
+      ],
+      "required_for_task": true
+    },
+    {
+      "name": "arithmetic_bitwise",
+      "input": "scheme program.scm\n(bit-and 6 3)\n",
+      "expected_output": "2\n",
+      "covers": [
+        "A",
+        "I"
+      ],
+      "required_for_task": true
+    },
+    {
+      "name": "variable_access",
+      "input": "scheme program.scm\n(begin (define x 7) (+ x 5))\n",
+      "expected_output": "12\n",
+      "covers": [
+        "B"
+      ],
+      "required_for_task": false
+    }
+  ]
+}
